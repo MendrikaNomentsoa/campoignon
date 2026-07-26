@@ -6,7 +6,7 @@ const INACTIVITY_DAYS = 3;
 export async function listCommunities(supabase: SupabaseClient) {
   const { data, error } = await supabase
     .from('communities')
-    .select('*')
+    .select('*, community_members(id)', { count: 'exact' })
     .order('created_at', { ascending: true });
 
   if (error) {

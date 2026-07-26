@@ -74,7 +74,12 @@ export default function InscriptionPage() {
         return
       }
 
-      router.push("/choix-communaute")
+      if (!data.session) {
+        router.push("/verification-email");
+        return;
+      }
+
+      router.push("/onboarding")
     } catch {
       setError("Erreur réseau, réessaie.")
     } finally {
@@ -322,6 +327,7 @@ export default function InscriptionPage() {
                 variant="outline"
                 type="button"
                 className="w-full text-black"
+                onClick={() => alert("Inscription Google bientôt disponible")}
               >
                 <svg className="size-4" viewBox="0 0 24 24">
                   <path

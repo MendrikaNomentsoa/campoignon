@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { motion } from "framer-motion";
 import Link from "next/link";
@@ -11,12 +11,6 @@ import {
   TrendingUp,
   UserPlus,
   Sparkles,
-  BookOpen,
-  Code2,
-  Dumbbell,
-  Palette,
-  Music2,
-  Briefcase,
   Crown,
   Star,
   Heart,
@@ -24,114 +18,24 @@ import {
   Eye,
   ThumbsUp,
   MessageCircle,
+  Loader2,
+  Brain,
 } from "lucide-react";
+import { fetchCommunity, getCommunityStyle, type CommunityData } from "@/lib/communityStyles";
+import { MediatorPanel } from "@/components/ai/MediatorPanel";
 
-// Données de la communauté
-const communauteData = {
-  programmation: {
-    nom: "Programmation",
-    slug: "programmation",
-    description: "Code, apprends et construis des projets avec d'autres développeurs.",
-    icone: <Code2 className="w-8 h-8" />,
-    couleur: "from-purple-500 to-pink-500",
-    membres: 1247,
-    publications: 234,
-    discussions: 89,
-  },
-  lecture: {
-    nom: "Lecture",
-    slug: "lecture",
-    description: "Plonge dans les livres et partage tes découvertes littéraires.",
-    icone: <BookOpen className="w-8 h-8" />,
-    couleur: "from-amber-400 to-orange-500",
-    membres: 856,
-    publications: 156,
-    discussions: 67,
-  },
-  sport: {
-    nom: "Sport",
-    slug: "sport",
-    description: "Repousse tes limites et atteins tes objectifs sportifs.",
-    icone: <Dumbbell className="w-8 h-8" />,
-    couleur: "from-emerald-400 to-teal-500",
-    membres: 2341,
-    publications: 312,
-    discussions: 123,
-  },
-  dessin: {
-    nom: "Dessin",
-    slug: "dessin",
-    description: "Donne vie à ton imaginaire sur papier ou en numérique.",
-    icone: <Palette className="w-8 h-8" />,
-    couleur: "from-rose-400 to-red-500",
-    membres: 623,
-    publications: 89,
-    discussions: 34,
-  },
-  musique: {
-    nom: "Musique",
-    slug: "musique",
-    description: "Crée, compose et partage ta passion pour la musique.",
-    icone: <Music2 className="w-8 h-8" />,
-    couleur: "from-blue-400 to-indigo-500",
-    membres: 934,
-    publications: 178,
-    discussions: 56,
-  },
-  entrepreneuriat: {
-    nom: "Entrepreneuriat",
-    slug: "entrepreneuriat",
-    description: "Construis ton projet de l'idée au lancement.",
-    icone: <Briefcase className="w-8 h-8" />,
-    couleur: "from-yellow-400 to-orange-400",
-    membres: 1578,
-    publications: 245,
-    discussions: 98,
-  },
-};
-
-// Statistiques de la communauté
 const stats = [
-  { label: "Membres", value: 1247, icon: <Users className="w-5 h-5" />, color: "bg-blue-500/20" },
-  { label: "Publications", value: 234, icon: <FileText className="w-5 h-5" />, color: "bg-emerald-400/20" },
-  { label: "Discussions", value: 89, icon: <MessageSquare className="w-5 h-5" />, color: "bg-amber-400/20" },
+  { label: "Membres", value: 0, icon: <Users className="w-5 h-5" />, color: "bg-blue-500/20" },
+  { label: "Publications", value: 0, icon: <FileText className="w-5 h-5" />, color: "bg-emerald-400/20" },
+  { label: "Discussions", value: 0, icon: <MessageSquare className="w-5 h-5" />, color: "bg-amber-400/20" },
 ];
 
-// Publications récentes
 const publicationsRecentes = [
-  {
-    id: 1,
-    auteur: "Alice Martin",
-    avatar: "A",
-    titre: "Comment débuter en React ?",
-    contenu: "Je cherche des ressources pour apprendre React. Des recommandations ?",
-    date: "Il y a 2h",
-    likes: 12,
-    commentaires: 5,
-  },
-  {
-    id: 2,
-    auteur: "Thomas Bernard",
-    avatar: "T",
-    titre: "Astuce du jour : Git rebase",
-    contenu: "Le rebase est super utile pour garder un historique propre...",
-    date: "Il y a 4h",
-    likes: 8,
-    commentaires: 3,
-  },
-  {
-    id: 3,
-    auteur: "Sophie Dubois",
-    avatar: "S",
-    titre: "Mon projet final est terminé !",
-    contenu: "Après 3 mois de travail, mon site e-commerce est en ligne !",
-    date: "Il y a 1 jour",
-    likes: 24,
-    commentaires: 7,
-  },
+  { id: 1, auteur: "Alice Martin", avatar: "A", titre: "Comment débuter en React ?", contenu: "Je cherche des ressources pour apprendre React.", date: "Il y a 2h", likes: 12, commentaires: 5 },
+  { id: 2, auteur: "Thomas Bernard", avatar: "T", titre: "Astuce du jour : Git rebase", contenu: "Le rebase est super utile pour garder un historique propre...", date: "Il y a 4h", likes: 8, commentaires: 3 },
+  { id: 3, auteur: "Sophie Dubois", avatar: "S", titre: "Mon projet final est terminé !", contenu: "Après 3 mois de travail, mon site e-commerce est en ligne !", date: "Il y a 1 jour", likes: 24, commentaires: 7 },
 ];
 
-// Membres en ligne
 const membresEnLigne = [
   { nom: "Jean Dupont", avatar: "J", role: "Expert" },
   { nom: "Marie Curie", avatar: "M", role: "Mentor" },
@@ -139,7 +43,6 @@ const membresEnLigne = [
   { nom: "Lucas Durand", avatar: "L", role: "Membre" },
 ];
 
-// Top contributeurs
 const topContributeurs = [
   { nom: "Alice Martin", avatar: "A", points: 2450, role: "Expert" },
   { nom: "Thomas Bernard", avatar: "T", points: 1890, role: "Mentor" },
@@ -151,27 +54,56 @@ export default function CommunautePage() {
   const params = useParams();
   const slug = params?.slug as string;
   const [activeTab, setActiveTab] = useState("publications");
+  const [communaute, setCommunaute] = useState<CommunityData | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const data = communauteData[slug as keyof typeof communauteData] || communauteData.programmation;
+  useEffect(() => {
+    fetchCommunity(slug).then((data) => {
+      setCommunaute(data);
+      setLoading(false);
+    });
+  }, [slug]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <Loader2 className="w-6 h-6 text-white/40 animate-spin" />
+      </div>
+    );
+  }
+
+  if (!communaute) {
+    return (
+      <div className="text-center py-20">
+        <p className="text-white/60">Communauté introuvable</p>
+      </div>
+    );
+  }
+
+  const style = getCommunityStyle(communaute.name);
+  const Icone = style.icone;
+
+  const statsValues = [
+    { label: "Membres", value: communaute.membres, icon: <Users className="w-5 h-5" />, color: "bg-blue-500/20" },
+    { label: "Publications", value: 234, icon: <FileText className="w-5 h-5" />, color: "bg-emerald-400/20" },
+    { label: "Discussions", value: 89, icon: <MessageSquare className="w-5 h-5" />, color: "bg-amber-400/20" },
+  ];
 
   return (
     <div className="space-y-6">
-      {/* En-tête */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         className="flex flex-col md:flex-row md:items-center justify-between gap-4"
       >
         <div className="flex items-center gap-4">
-          <div
-            className={`p-3 rounded-2xl bg-linear-to-br ${data.couleur} shadow-lg`}
-          >
-            <div className="text-white">{data.icone}</div>
+          <div className={`p-3 rounded-2xl bg-linear-to-br ${style.couleur} shadow-lg`}>
+            <Icone className="w-8 h-8 text-white" />
           </div>
           <div>
             <h1 className="text-2xl font-bold text-white">Communauté</h1>
             <p className="text-white/40 text-sm">
-              {data.nom} · {data.membres} membres
+              {communaute.name} · {communaute.membres} membre{communaute.membres > 1 ? "s" : ""}
             </p>
           </div>
         </div>
@@ -198,14 +130,13 @@ export default function CommunautePage() {
         </div>
       </motion.div>
 
-      {/* Statistiques */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
         className="grid grid-cols-1 sm:grid-cols-3 gap-4"
       >
-        {stats.map((stat, index) => (
+        {statsValues.map((stat, index) => (
           <div
             key={index}
             className="bg-white/5 backdrop-blur-sm rounded-xl p-4 border border-white/5 
@@ -222,7 +153,6 @@ export default function CommunautePage() {
         ))}
       </motion.div>
 
-      {/* Tabs */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -234,6 +164,7 @@ export default function CommunautePage() {
           { id: "discussions", label: "Discussions", icon: <MessageSquare className="w-4 h-4" /> },
           { id: "membres", label: "Membres", icon: <Users className="w-4 h-4" /> },
           { id: "classement", label: "Classement", icon: <TrendingUp className="w-4 h-4" /> },
+          { id: "assistant", label: "Assistant IA", icon: <Brain className="w-4 h-4" /> },
         ].map((tab) => (
           <button
             key={tab.id}
@@ -252,9 +183,7 @@ export default function CommunautePage() {
         ))}
       </motion.div>
 
-      {/* Grille principale */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Colonne de gauche - Contenu principal */}
         <div className="lg:col-span-2 space-y-6">
           {activeTab === "publications" && (
             <motion.div
@@ -272,8 +201,8 @@ export default function CommunautePage() {
                              hover:border-white/20 transition-all duration-300"
                 >
                   <div className="flex items-start gap-3">
-                    <div className="w-10 h-10 rounded-full bg-linear-to-br from-burgundy-500 to-rose-400 
-                                  flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+                    <div className={`w-10 h-10 rounded-full bg-linear-to-br ${style.couleur} 
+                                  flex items-center justify-center text-white font-bold text-sm flex-shrink-0`}>
                       {pub.avatar}
                     </div>
                     <div className="flex-1">
@@ -347,34 +276,6 @@ export default function CommunautePage() {
                 </div>
               </div>
 
-              <div className="bg-white/5 backdrop-blur-sm rounded-xl p-5 border border-white/5 
-                            hover:border-white/20 transition-all duration-300 cursor-pointer">
-                <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 rounded-full bg-linear-to-br from-emerald-400 to-teal-500 
-                                flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
-                    V
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between">
-                      <span className="text-white/80 font-medium">Victor Hugo</span>
-                      <span className="text-white/30 text-xs">Il y a 1 jour</span>
-                    </div>
-                    <h4 className="text-white font-medium mt-1">Comment rester motivé ?</h4>
-                    <p className="text-white/50 text-sm mt-1">Des astuces pour garder la motivation au quotidien...</p>
-                    <div className="flex items-center gap-4 mt-3">
-                      <span className="flex items-center gap-1 text-white/30 text-xs">
-                        <MessageCircle className="w-4 h-4" />
-                        8 réponses
-                      </span>
-                      <span className="flex items-center gap-1 text-white/30 text-xs">
-                        <Eye className="w-4 h-4" />
-                        32 vues
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
               <Link
                 href={`/camp/${slug}/communaute/discussions`}
                 className="block text-center text-white/30 hover:text-white/60 text-sm py-2 transition-colors"
@@ -390,12 +291,7 @@ export default function CommunautePage() {
               animate={{ opacity: 1, x: 0 }}
               className="space-y-3"
             >
-              {[
-                { nom: "Alice Martin", avatar: "A", role: "Expert", actif: true },
-                { nom: "Thomas Bernard", avatar: "T", role: "Mentor", actif: true },
-                { nom: "Sophie Dubois", avatar: "S", role: "Membre", actif: false },
-                { nom: "Jean Dupont", avatar: "J", role: "Membre", actif: true },
-              ].map((membre, index) => (
+              {membresEnLigne.map((membre, index) => (
                 <motion.div
                   key={index}
                   initial={{ opacity: 0, x: -10 }}
@@ -404,22 +300,14 @@ export default function CommunautePage() {
                   className="flex items-center gap-3 p-3 bg-white/5 rounded-xl border border-white/5 
                              hover:border-white/20 transition-all duration-300"
                 >
-                  <div className="w-10 h-10 rounded-full bg-linear-to-br from-burgundy-500 to-rose-400 
-                                flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+                  <div className={`w-10 h-10 rounded-full bg-linear-to-br ${style.couleur} 
+                                flex items-center justify-center text-white font-bold text-sm flex-shrink-0`}>
                     {membre.avatar}
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
                       <span className="text-white/80 font-medium">{membre.nom}</span>
                       <span className="text-white/20 text-[10px]">{membre.role}</span>
-                    </div>
-                    <div className="flex items-center gap-2 mt-0.5">
-                      {membre.actif && (
-                        <div className="flex items-center gap-1">
-                          <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                          <span className="text-white/20 text-[10px]">En ligne</span>
-                        </div>
-                      )}
                     </div>
                   </div>
                 </motion.div>
@@ -452,8 +340,8 @@ export default function CommunautePage() {
                   <div className="text-white/30 text-sm font-bold w-6 text-center">
                     {index + 1}
                   </div>
-                  <div className="w-10 h-10 rounded-full bg-linear-to-br from-burgundy-500 to-rose-400 
-                                flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+                  <div className={`w-10 h-10 rounded-full bg-linear-to-br ${style.couleur} 
+                                flex items-center justify-center text-white font-bold text-sm flex-shrink-0`}>
                     {membre.avatar}
                   </div>
                   <div className="flex-1">
@@ -477,11 +365,19 @@ export default function CommunautePage() {
               </Link>
             </motion.div>
           )}
+
+          {activeTab === "assistant" && (
+            <motion.div
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="space-y-4"
+            >
+              <MediatorPanel communityId={slug} />
+            </motion.div>
+          )}
         </div>
 
-        {/* Colonne de droite - Sidebar */}
         <div className="space-y-6">
-          {/* Membres en ligne */}
           <motion.div
             initial={{ opacity: 0, x: 10 }}
             animate={{ opacity: 1, x: 0 }}
@@ -496,8 +392,8 @@ export default function CommunautePage() {
             <div className="space-y-2">
               {membresEnLigne.map((membre, index) => (
                 <div key={index} className="flex items-center gap-3 p-2 bg-white/5 rounded-lg">
-                  <div className="w-8 h-8 rounded-full bg-linear-to-br from-burgundy-500 to-rose-400 
-                                flex items-center justify-center text-white font-bold text-xs">
+                  <div className={`w-8 h-8 rounded-full bg-linear-to-br ${style.couleur} 
+                                flex items-center justify-center text-white font-bold text-xs`}>
                     {membre.avatar}
                   </div>
                   <div className="flex-1">
@@ -510,7 +406,6 @@ export default function CommunautePage() {
             </div>
           </motion.div>
 
-          {/* Top contributeurs */}
           <motion.div
             initial={{ opacity: 0, x: 10 }}
             animate={{ opacity: 1, x: 0 }}
@@ -528,8 +423,8 @@ export default function CommunautePage() {
                   <div className="text-white/30 text-xs font-bold w-4">
                     {index + 1}
                   </div>
-                  <div className="w-8 h-8 rounded-full bg-linear-to-br from-burgundy-500 to-rose-400 
-                                flex items-center justify-center text-white font-bold text-xs">
+                  <div className={`w-8 h-8 rounded-full bg-linear-to-br ${style.couleur} 
+                                flex items-center justify-center text-white font-bold text-xs`}>
                     {membre.avatar}
                   </div>
                   <div className="flex-1">
@@ -545,7 +440,6 @@ export default function CommunautePage() {
             </div>
           </motion.div>
 
-          {/* Règles de la communauté */}
           <motion.div
             initial={{ opacity: 0, x: 10 }}
             animate={{ opacity: 1, x: 0 }}

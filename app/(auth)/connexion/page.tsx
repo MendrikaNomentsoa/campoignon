@@ -66,7 +66,7 @@ export default function ConnexionPage() {
         return
       }
 
-      router.push("/choix-communaute")
+      router.push("/onboarding")
     } catch {
       setError("Erreur réseau, réessaie.")
     } finally {
@@ -272,6 +272,7 @@ export default function ConnexionPage() {
                 variant="outline"
                 type="button"
                 className="w-full text-black"
+                onClick={() => alert("Connexion Google bientôt disponible")}
               >
                 <svg className="size-4" viewBox="0 0 24 24">
                   <path

@@ -1,12 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import {
   Code2,
   BookOpen,
+  Dumbbell,
+  Palette,
+  Music,
+  Rocket,
+  Users,
   Sparkles,
   LogOut,
   User,
@@ -17,97 +22,65 @@ import {
 interface Communaute {
   id: string;
   nom: string;
-  slug: string;
-  description: string;
+  description: string | null;
+  membres: number;
+}
+
+interface CommunauteStyle {
   icone: React.ReactNode;
   couleur: string;
   gradient: string;
-  membres: number;
-  tags: string[];
 }
 
-// Données des communautés suggérées
-const communautesSuggerees: Communaute[] = [
+// Palette visuelle réutilisée pour chaque communauté (les vraies données Supabase
+// n'ont ni icône ni couleur, on assigne un style en tournant sur cette palette)
+const PALETTE: CommunauteStyle[] = [
   {
-    id: "1",
-    nom: "Programmation",
-    slug: "programmation",
-    description: "Code, apprends et construis des projets avec d'autres développeurs.",
     icone: <Code2 className="w-12 h-12" />,
     couleur: "from-purple-500 to-pink-500",
     gradient: "from-purple-600/30 to-pink-600/30",
-    membres: 1247,
-    tags: ["Web", "Mobile", "IA", "DevOps"],
   },
   {
-    id: "2",
-    nom: "Lecture",
-    slug: "lecture",
-    description: "Plonge dans les livres et partage tes découvertes littéraires.",
     icone: <BookOpen className="w-12 h-12" />,
     couleur: "from-amber-400 to-orange-500",
     gradient: "from-amber-400/30 to-orange-500/30",
-    membres: 856,
-    tags: ["Romans", "Développement", "Poésie", "Essais"],
   },
-];
-
-// Autres communautés
-const autresCommunautes: Communaute[] = [
   {
-    id: "3",
-    nom: "Sport",
-    slug: "sport",
-    description: "Repousse tes limites et atteins tes objectifs sportifs.",
-    icone: <Code2 className="w-6 h-6" />,
+    icone: <Dumbbell className="w-12 h-12" />,
     couleur: "from-emerald-400 to-teal-500",
     gradient: "from-emerald-400/30 to-teal-500/30",
-    membres: 2341,
-    tags: ["Running", "Musculation", "Yoga", "CrossFit"],
   },
   {
-    id: "4",
-    nom: "Dessin",
-    slug: "dessin",
-    description: "Donne vie à ton imaginaire sur papier ou en numérique.",
-    icone: <Code2 className="w-6 h-6" />,
+    icone: <Palette className="w-12 h-12" />,
     couleur: "from-rose-400 to-red-500",
     gradient: "from-rose-400/30 to-red-500/30",
-    membres: 623,
-    tags: ["Digital", "Aquarelle", "Crayon", "Peinture"],
   },
   {
-    id: "5",
-    nom: "Musique",
-    slug: "musique",
-    description: "Crée, compose et partage ta passion pour la musique.",
-    icone: <Code2 className="w-6 h-6" />,
+    icone: <Music className="w-12 h-12" />,
     couleur: "from-blue-400 to-indigo-500",
     gradient: "from-blue-400/30 to-indigo-500/30",
-    membres: 934,
-    tags: ["Guitare", "Piano", "Composition", "Chant"],
   },
   {
-    id: "6",
-    nom: "Entrepreneuriat",
-    slug: "entrepreneuriat",
-    description: "Construis ton projet de l'idée au lancement.",
-    icone: <Code2 className="w-6 h-6" />,
+    icone: <Rocket className="w-12 h-12" />,
     couleur: "from-yellow-400 to-orange-400",
     gradient: "from-yellow-400/30 to-orange-400/30",
-    membres: 1578,
-    tags: ["Startup", "Business", "Marketing", "Finance"],
   },
 ];
 
-// Composant Carte de communauté
+function styleForIndex(index: number): CommunauteStyle {
+  return PALETTE[index % PALETTE.length];
+}
+
+// Composant Carte de communauté (grande, pour les 2 premières)
 const CarteCommunaute = ({
   communaute,
+  style,
   onSelect,
   index,
 }: {
   communaute: Communaute;
-  onSelect: (slug: string) => void;
+  style: CommunauteStyle;
+  onSelect: (id: string) => void;
   index: number;
 }) => {
   return (
@@ -116,21 +89,21 @@ const CarteCommunaute = ({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: index * 0.15 }}
       whileHover={{ scale: 1.02, y: -3 }}
-      onClick={() => onSelect(communaute.slug)}
+      onClick={() => onSelect(communaute.id)}
       className="group relative cursor-pointer rounded-2xl p-6 border-2 border-white/10 bg-white/5 
                  hover:border-white/30 hover:bg-white/10 transition-all duration-300"
     >
       <div
-        className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${communaute.gradient} opacity-0 
+        className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${style.gradient} opacity-0 
                     group-hover:opacity-100 transition-opacity duration-500`}
       />
 
       <div className="relative z-10 flex items-center gap-6">
         <div
-          className={`p-4 rounded-2xl bg-gradient-to-br ${communaute.couleur} 
+          className={`p-4 rounded-2xl bg-gradient-to-br ${style.couleur} 
                       shadow-lg transform group-hover:scale-110 transition-all duration-300`}
         >
-          <div className="text-white">{communaute.icone}</div>
+          <div className="text-white">{style.icone}</div>
         </div>
 
         <div className="flex-1">
@@ -140,22 +113,12 @@ const CarteCommunaute = ({
             {communaute.nom}
           </h3>
           <p className="text-white/50 text-sm mt-1 group-hover:text-white/70 transition-colors">
-            {communaute.description}
+            {communaute.description || "Rejoins cette communauté et lance-toi."}
           </p>
           <div className="flex items-center gap-3 mt-2">
             <span className="text-xs text-white/30">
-              {communaute.membres.toLocaleString()} membres
+              {communaute.membres.toLocaleString()} membre{communaute.membres > 1 ? "s" : ""}
             </span>
-            <div className="flex gap-1">
-              {communaute.tags.slice(0, 2).map((tag) => (
-                <span
-                  key={tag}
-                  className="px-2 py-0.5 bg-white/5 rounded-full text-white/30 text-xs"
-                >
-                  #{tag}
-                </span>
-              ))}
-            </div>
           </div>
         </div>
       </div>
@@ -163,14 +126,16 @@ const CarteCommunaute = ({
   );
 };
 
-// Carte "Autre communauté"
+// Carte "Autre communauté" (petite, pour le reste)
 const CarteAutreCommunaute = ({
   communaute,
+  style,
   onSelect,
   index,
 }: {
   communaute: Communaute;
-  onSelect: (slug: string) => void;
+  style: CommunauteStyle;
+  onSelect: (id: string) => void;
   index: number;
 }) => {
   return (
@@ -179,15 +144,15 @@ const CarteAutreCommunaute = ({
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.4, delay: 0.8 + index * 0.05 }}
       whileHover={{ scale: 1.05, y: -3 }}
-      onClick={() => onSelect(communaute.slug)}
+      onClick={() => onSelect(communaute.id)}
       className="group cursor-pointer rounded-xl p-4 border border-white/5 bg-white/5 
                  hover:bg-white/10 hover:border-white/20 transition-all duration-300 text-center"
     >
       <div
-        className={`p-3 rounded-xl bg-gradient-to-br ${communaute.couleur} 
+        className={`p-3 rounded-xl bg-gradient-to-br ${style.couleur} 
                     w-fit mx-auto mb-2 group-hover:scale-110 transition-all duration-300`}
       >
-        <div className="text-white text-2xl">{communaute.icone}</div>
+        <div className="text-white text-2xl">{style.icone}</div>
       </div>
       <p className="text-white/70 text-sm font-medium group-hover:text-white transition-colors">
         {communaute.nom}
@@ -259,19 +224,95 @@ export default function Home() {
   const router = useRouter();
   const [isConnected, setIsConnected] = useState(false);
   const [user, setUser] = useState<{ nom: string; email: string } | null>(null);
+  const [communautes, setCommunautes] = useState<Communaute[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [joiningId, setJoiningId] = useState<string | null>(null);
 
-  // Sélectionner une communauté -> redirige vers sa propre page
-  const handleSelectCommunaute = (slug: string) => {
-    localStorage.setItem("campoignon_communaute", slug);
-    router.push(`/camp/${slug}`);
+  // Vérifier si l'utilisateur est connecté
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetch("/api/auth/me");
+        if (res.ok) {
+          const { user: me } = await res.json();
+          setIsConnected(true);
+          setUser({ nom: me.username, email: me.email });
+        } else {
+          setIsConnected(false);
+          setUser(null);
+        }
+      } catch {
+        setIsConnected(false);
+        setUser(null);
+      }
+    })();
+  }, []);
+
+  // Charger les vraies communautés depuis Supabase
+  useEffect(() => {
+    (async () => {
+      try {
+        setLoading(true);
+        const res = await fetch("/api/communities");
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({}));
+          throw new Error(data.error || "Impossible de charger les communautés");
+        }
+        const data = await res.json();
+        const list = Array.isArray(data) ? data : [];
+        setCommunautes(
+          list.map((c: any) => ({
+            id: c.id,
+            nom: c.name,
+            description: c.description,
+            membres: c.community_members?.length ?? 0,
+          }))
+        );
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Erreur inconnue");
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, []);
+
+  const suggerees = communautes.slice(0, 2);
+  const autres = communautes.slice(2);
+
+  // Sélectionner une communauté -> rejoint (si connecté) et va direct sur ses discussions
+  const handleSelectCommunaute = async (id: string) => {
+    if (!isConnected) {
+      router.push("/connexion");
+      return;
+    }
+
+    setJoiningId(id);
+    try {
+      await fetch(`/api/communities/${id}/join`, { method: "POST" });
+    } catch {
+      // si le join échoue on tente quand même la redirection,
+      // la page de discussions affichera l'erreur d'accès le cas échéant
+    } finally {
+      setJoiningId(null);
+    }
+
+    localStorage.setItem("campoignon_communaute", id);
+    router.push(`/camp/${id}`);
   };
 
   // Déconnexion
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+    } catch {
+      // ignore
+    }
     setIsConnected(false);
     setUser(null);
     localStorage.removeItem("campoignon_user");
     localStorage.removeItem("campoignon_communaute");
+    router.push("/");
   };
 
   return (
@@ -320,51 +361,88 @@ export default function Home() {
 
           <p className="text-white/40 mt-2 text-sm">
             {isConnected
-              ? "Choisis une communauté pour commencer ton projet"
+              ? "Choisis une communauté pour rejoindre sa discussion"
               : "Connecte-toi ou inscris-toi pour rejoindre une communauté"}
           </p>
         </motion.div>
 
-        {/* Communautés suggérées */}
-        <div className="space-y-4">
-          <p className="text-white/30 text-sm font-medium uppercase tracking-wider px-1">
-            Communautés suggérées
-          </p>
-
-          <div className="grid grid-cols-1 gap-4">
-            {communautesSuggerees.map((communaute, index) => (
-              <CarteCommunaute
-                key={communaute.id}
-                communaute={communaute}
-                onSelect={handleSelectCommunaute}
-                index={index}
-              />
-            ))}
+        {loading && (
+          <div className="flex items-center justify-center gap-2 text-white/40 py-12">
+            <Users className="w-5 h-5 animate-pulse" />
+            <span className="text-sm">Chargement des communautés...</span>
           </div>
-        </div>
+        )}
 
-        {/* Autres communautés */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.6 }}
-          className="mt-8"
-        >
-          <p className="text-white/30 text-sm font-medium uppercase tracking-wider px-1 mb-4">
-            Autres communautés
-          </p>
-
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            {autresCommunautes.map((communaute, index) => (
-              <CarteAutreCommunaute
-                key={communaute.id}
-                communaute={communaute}
-                onSelect={handleSelectCommunaute}
-                index={index}
-              />
-            ))}
+        {!loading && error && (
+          <div className="text-center py-12">
+            <p className="text-rose-300 text-sm">{error}</p>
           </div>
-        </motion.div>
+        )}
+
+        {!loading && !error && communautes.length === 0 && (
+          <div className="text-center py-12">
+            <p className="text-white/40 text-sm">
+              Aucune communauté disponible pour le moment.
+            </p>
+          </div>
+        )}
+
+        {!loading && !error && communautes.length > 0 && (
+          <>
+            {/* Communautés suggérées */}
+            {suggerees.length > 0 && (
+              <div className="space-y-4">
+                <p className="text-white/30 text-sm font-medium uppercase tracking-wider px-1">
+                  Communautés suggérées
+                </p>
+
+                <div className="grid grid-cols-1 gap-4">
+                  {suggerees.map((communaute, index) => (
+                    <CarteCommunaute
+                      key={communaute.id}
+                      communaute={communaute}
+                      style={styleForIndex(index)}
+                      onSelect={handleSelectCommunaute}
+                      index={index}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Autres communautés */}
+            {autres.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.6 }}
+                className="mt-8"
+              >
+                <p className="text-white/30 text-sm font-medium uppercase tracking-wider px-1 mb-4">
+                  Autres communautés
+                </p>
+
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  {autres.map((communaute, index) => (
+                    <CarteAutreCommunaute
+                      key={communaute.id}
+                      communaute={communaute}
+                      style={styleForIndex(index + suggerees.length)}
+                      onSelect={handleSelectCommunaute}
+                      index={index}
+                    />
+                  ))}
+                </div>
+              </motion.div>
+            )}
+          </>
+        )}
+
+        {joiningId && (
+          <p className="text-center text-white/30 text-xs mt-6">
+            Connexion à la communauté...
+          </p>
+        )}
 
         {/* Footer */}
         <motion.div
