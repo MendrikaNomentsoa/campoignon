@@ -1,0 +1,102 @@
+### ============================================
+### TEST RAPIDE - Version simplifiée
+### ============================================
+
+@baseUrl = http://localhost:3000
+
+### --------------------------------------------------
+### ÉTAPE 1 : Récupérer automatiquement les IDs
+### --------------------------------------------------
+
+### 1.1 Récupérer la première communauté
+GET {{baseUrl}}/api/communities
+> {%
+    if (response.body && response.body.length > 0) {
+        client.global.set("communityId", response.body[0].id);
+        client.log("✅ Community ID récupéré: " + response.body[0].id);
+    } else {
+        client.log("❌ Aucune communauté trouvée !");
+    }
+%}
+
+### 1.2 Récupérer le premier utilisateur
+GET {{baseUrl}}/api/auth/me
+> {%
+    if (response.body && response.body.user) {
+        client.global.set("userId", response.body.user.id);
+        client.log("✅ User ID récupéré: " + response.body.user.id);
+    } else {
+        client.log("⚠️ Non authentifié. Inscrivez-vous d'abord avec la requête ci-dessous.");
+    }
+%}
+
+### --------------------------------------------------
+### ÉTAPE 2 : S'inscrire (si pas encore de compte)
+### --------------------------------------------------
+
+### 2.1 Créer un compte de test
+POST {{baseUrl}}/api/auth/signup
+Content-Type: application/json
+
+{
+  "email": "test_rapide@example.com",
+  "password": "Test123456!",
+  "username": "test_rapide"
+}
+
+### 2.2 Se connecter (pour obtenir le cookie de session)
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "test_rapide@example.com",
+  "password": "Test123456!"
+}
+
+### --------------------------------------------------
+### ÉTAPE 3 : Tester le CHAT IA (le plus important !)
+### --------------------------------------------------
+
+### 3.1 Chat simple (sans challenge)
+POST {{baseUrl}}/api/ai/chat
+Content-Type: application/json
+
+{
+  "communityId": "{{communityId}}",
+  "message": "Bonjour ! Je viens de commencer à apprendre React, peux-tu me donner des conseils pour débuter ?",
+  "userId": "{{userId}}"
+}
+
+### 3.2 Chat avec challenge (optionnel)
+POST {{baseUrl}}/api/ai/chat
+Content-Type: application/json
+
+{
+  "communityId": "{{communityId}}",
+  "message": "Je suis dans un challenge et je bloque sur la gestion d'état avec useState. Une aide ?",
+  "userId": "{{userId}}"
+}
+
+### --------------------------------------------------
+### ÉTAPE 4 : Tester les rappels
+### --------------------------------------------------
+
+### 4.1 Générer des rappels (nécessite CRON_SECRET)
+POST {{baseUrl}}/api/ai/reminders
+Authorization: Bearer votre_secret_cron_ici
+
+### 4.2 Voir mes rappels
+GET {{baseUrl}}/api/ai/reminders
+
+### --------------------------------------------------
+### ÉTAPE 5 : Vérifier que tout fonctionne
+### --------------------------------------------------
+
+### 5.1 Voir les communautés disponibles
+GET {{baseUrl}}/api/communities
+
+### 5.2 Voir les entrées d'apprentissage
+GET {{baseUrl}}/api/entries?communityId={{communityId}}
+
+### 5.3 Voir les challenges
+GET {{baseUrl}}/api/challenges?communityId={{communityId}}
