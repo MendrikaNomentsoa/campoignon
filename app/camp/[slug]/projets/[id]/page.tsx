@@ -26,7 +26,10 @@ import {
   Wand2,
   BookOpen,
   PenLine,
+  Trash2,
 } from "lucide-react";
+import { ProjectStatusBadge, type ProjectStatus } from "@/components/projects/ProjectStatusBadge";
+import { AbandonProjectModal, type AbandonChoice } from "@/components/projects/AbandonProjectModal";
 
 type TabId = "roadmap" | "pitch" | "readme" | "resources" | "heritage";
 
@@ -40,6 +43,7 @@ interface Project {
   created_by: string | null;
   community_id: string | null;
   challenge_id: string | null;
+  project_status: ProjectStatus;
 }
 
 const TAB_LABELS: Record<TabId, { label: string; icon: React.ElementType }> = {
@@ -60,7 +64,7 @@ const GENERATING_MESSAGES = [
 
 function parseAiData(description: string | null): any {
   if (!description) return null;
-  const markers = ["__AI_INIT__", "__AI_PITCH__", "__AI_README__", "__AI_RESOURCES__"];
+  const markers = ["__AI_INIT__", "__AI_PITCH__", "__AI_README__", "__AI_RESOURCES__", "__AI_HERITAGE__"];
   const hasMarker = markers.some((m) => description.includes(m));
   if (!hasMarker) return null;
 
@@ -97,6 +101,9 @@ function parseAiData(description: string | null): any {
   if (Array.isArray(resources)) result.suggestedResources = resources;
   else if (resources && typeof resources === "object") result.suggestedResources = resources.suggestedResources ?? [resources];
 
+  const heritage = extractBlock("__AI_HERITAGE__");
+  if (heritage && typeof heritage === "object") result.heritage = heritage;
+
   return Object.keys(result).length > 0 ? result : null;
 }
 
@@ -119,6 +126,16 @@ export default function ProjetDetailPage() {
   const [copied, setCopied] = useState(false);
   const [initLoading, setInitLoading] = useState(false);
   const [heritageLoading, setHeritageLoading] = useState(false);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [abandonOpen, setAbandonOpen] = useState(false);
+  const [submittingAbandon, setSubmittingAbandon] = useState(false);
+
+  useEffect(() => {
+    fetch("/api/auth/me")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => setCurrentUserId(data?.user?.id ?? null))
+      .catch(() => setCurrentUserId(null));
+  }, []);
 
   useEffect(() => {
     if (!isGenerating) return;
@@ -139,6 +156,7 @@ export default function ProjetDetailPage() {
           setProject(data);
           const parsed = parseAiData(data.description);
           if (parsed) setAiData(parsed);
+          if (parsed?.heritage) setHeritage(parsed.heritage);
         }
       }
     } catch (err) {
@@ -216,6 +234,30 @@ export default function ProjetDetailPage() {
     }
   };
 
+  const handleAbandonConfirm = async (choice: AbandonChoice) => {
+    setSubmittingAbandon(true);
+    try {
+      const res = await fetch(`/api/projects/${projectId}/status`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ project_status: choice }),
+      });
+      if (res.ok) {
+        const { project: updated, heritage: newHeritage } = await res.json();
+        setProject((prev) => (prev ? { ...prev, project_status: updated.project_status } : prev));
+        if (newHeritage) {
+          setHeritage(newHeritage);
+          setActiveTab("heritage");
+        }
+        setAbandonOpen(false);
+      }
+    } catch (err) {
+      console.error("Erreur changement de statut:", err);
+    } finally {
+      setSubmittingAbandon(false);
+    }
+  };
+
   const handleProgress = async () => {
     setIsGenerating(true);
     try {
@@ -286,7 +328,7 @@ export default function ProjetDetailPage() {
         >
           <button
             onClick={() => router.push(`/camp/${campSlug}/projets`)}
-            className="flex items-center gap-2 text-sm text-slate-400 hover:text-white transition-colors"
+            className="flex items-center gap-2 text-sm text-slate-400 hover:text-foreground transition-colors"
           >
             <ArrowLeft className="size-4" />
             Retour aux projets
@@ -317,6 +359,16 @@ export default function ProjetDetailPage() {
               )}
               Héritage
             </Button>
+            {project.created_by === currentUserId && (
+              <Button
+                onClick={() => setAbandonOpen(true)}
+                variant="outline"
+                className="gap-2 border-red-500/20 text-red-400 hover:bg-red-500/10"
+              >
+                <Trash2 className="size-4" />
+                Supprimer
+              </Button>
+            )}
           </div>
         </motion.div>
 
@@ -337,7 +389,7 @@ export default function ProjetDetailPage() {
                   </div>
                 </div>
                 <div className="space-y-1">
-                  <p className="text-sm font-medium text-white">{generatingMessage}</p>
+                  <p className="text-sm font-medium text-foreground">{generatingMessage}</p>
                   <p className="text-xs text-slate-400">Cela peut prendre quelques secondes</p>
                 </div>
               </div>
@@ -358,7 +410,10 @@ export default function ProjetDetailPage() {
                   <Compass className="size-6 text-rose-400" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <h1 className="text-xl font-bold text-white truncate">{project.title}</h1>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <h1 className="text-xl font-bold text-foreground truncate">{project.title}</h1>
+                    <ProjectStatusBadge status={project.project_status} />
+                  </div>
                   {project.description && !project.description.includes("__AI_INIT__") && (
                     <p className="mt-1 text-sm text-slate-400 line-clamp-2">{project.description}</p>
                   )}
@@ -429,7 +484,7 @@ export default function ProjetDetailPage() {
                   className={`relative flex-1 flex items-center justify-center gap-1.5 rounded-xl px-3 py-2.5 text-sm font-medium transition-all ${
                     isActive
                       ? "bg-gradient-to-r from-rose-500 to-pink-600 text-white shadow-lg shadow-rose-500/20"
-                      : "text-slate-400 hover:text-white hover:bg-slate-800/50"
+                      : "text-slate-400 hover:text-foreground hover:bg-slate-800/50"
                   }`}
                 >
                   <Icon className="size-4" />
@@ -474,7 +529,7 @@ export default function ProjetDetailPage() {
                             <CardContent className="p-5">
                               <div className="flex items-center gap-2 mb-3">
                                 <Calendar className="size-4 text-rose-400" />
-                                <h3 className="text-sm font-bold text-white">
+                                <h3 className="text-sm font-bold text-foreground">
                                   Jour {day.day ?? i + 1}
                                   {day.title && (
                                     <span className="ml-2 font-normal text-slate-400">
@@ -506,7 +561,7 @@ export default function ProjetDetailPage() {
                         <Calendar className="size-8 text-rose-400" />
                       </div>
                       <div className="space-y-1">
-                        <p className="text-sm font-medium text-white">
+                        <p className="text-sm font-medium text-foreground">
                           Aucune roadmap pour l&apos;instant
                         </p>
                         <p className="text-xs text-slate-400">
@@ -543,7 +598,7 @@ export default function ProjetDetailPage() {
                           <p className="text-xs uppercase tracking-widest text-rose-400 font-medium mb-2">
                             Tagline
                           </p>
-                          <p className="text-2xl font-bold text-white leading-tight">
+                          <p className="text-2xl font-bold text-foreground leading-tight">
                             {aiData.pitch.tagline}
                           </p>
                         </div>
@@ -567,7 +622,7 @@ export default function ProjetDetailPage() {
                             {aiData.pitch.highlights.map((h: string, i: number) => (
                               <div
                                 key={i}
-                                className="flex items-start gap-3 rounded-xl bg-white/5 border border-white/5 p-3"
+                                className="flex items-start gap-3 rounded-xl bg-foreground/5 border border-foreground/5 p-3"
                               >
                                 <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-emerald-400" />
                                 <span className="text-sm text-slate-300">{h}</span>
@@ -585,7 +640,7 @@ export default function ProjetDetailPage() {
                         <PenLine className="size-8 text-rose-400" />
                       </div>
                       <div className="space-y-1">
-                        <p className="text-sm font-medium text-white">
+                        <p className="text-sm font-medium text-foreground">
                           Aucun pitch pour l&apos;instant
                         </p>
                         <p className="text-xs text-slate-400">
@@ -614,7 +669,7 @@ export default function ProjetDetailPage() {
                     <div className="flex items-center justify-between border-b border-slate-800 px-5 py-3">
                       <div className="flex items-center gap-2">
                         <BookOpen className="size-4 text-rose-400" />
-                        <span className="text-sm font-medium text-white">README.md</span>
+                        <span className="text-sm font-medium text-foreground">README.md</span>
                       </div>
                       <button
                         onClick={handleCopyReadme}
@@ -651,7 +706,7 @@ export default function ProjetDetailPage() {
                         <BookOpen className="size-8 text-rose-400" />
                       </div>
                       <div className="space-y-1">
-                        <p className="text-sm font-medium text-white">
+                        <p className="text-sm font-medium text-foreground">
                           Aucun README pour l&apos;instant
                         </p>
                         <p className="text-xs text-slate-400">
@@ -691,7 +746,7 @@ export default function ProjetDetailPage() {
                                 <LinkIcon className="size-5 text-blue-400" />
                               </div>
                               <div className="min-w-0">
-                                <p className="text-sm font-medium text-white truncate">
+                                <p className="text-sm font-medium text-foreground truncate">
                                   {res.title ?? res.name}
                                 </p>
                                 <span className="inline-block rounded-full bg-slate-800 border border-slate-700 px-2 py-0.5 text-xs text-slate-400">
@@ -722,7 +777,7 @@ export default function ProjetDetailPage() {
                         <LinkIcon className="size-8 text-rose-400" />
                       </div>
                       <div className="space-y-1">
-                        <p className="text-sm font-medium text-white">
+                        <p className="text-sm font-medium text-foreground">
                           Aucune ressource suggérée
                         </p>
                         <p className="text-xs text-slate-400">
@@ -764,15 +819,23 @@ export default function ProjetDetailPage() {
                             <p className="text-xs font-semibold uppercase tracking-wide text-emerald-400 mb-2">
                               Ce qui a fonctionné
                             </p>
-                            <p className="text-sm text-slate-300">{heritage.whatWorked}</p>
+                            <p className="text-sm text-slate-300">
+                              {Array.isArray(heritage.whatWorked)
+                                ? heritage.whatWorked.join(", ")
+                                : heritage.whatWorked}
+                            </p>
                           </div>
                         )}
-                        {heritage.whatDidnt && (
+                        {heritage.whatDidntWork && (
                           <div className="rounded-xl bg-red-500/5 border border-red-500/10 p-4">
                             <p className="text-xs font-semibold uppercase tracking-wide text-red-400 mb-2">
                               Ce qui n&apos;a pas fonctionné
                             </p>
-                            <p className="text-sm text-slate-300">{heritage.whatDidnt}</p>
+                            <p className="text-sm text-slate-300">
+                              {Array.isArray(heritage.whatDidntWork)
+                                ? heritage.whatDidntWork.join(", ")
+                                : heritage.whatDidntWork}
+                            </p>
                           </div>
                         )}
                       </div>
@@ -781,11 +844,15 @@ export default function ProjetDetailPage() {
                           <p className="text-xs uppercase tracking-widest text-amber-400 font-medium mb-2">
                             Tâches restantes
                           </p>
-                          <p className="text-sm text-slate-300">{heritage.remainingTasks}</p>
+                          <p className="text-sm text-slate-300">
+                            {Array.isArray(heritage.remainingTasks)
+                              ? heritage.remainingTasks.join(", ")
+                              : heritage.remainingTasks}
+                          </p>
                         </div>
                       )}
                       {heritage.handoffNotes && (
-                        <div className="rounded-xl bg-white/5 border border-white/5 p-4">
+                        <div className="rounded-xl bg-foreground/5 border border-foreground/5 p-4">
                           <p className="text-xs uppercase tracking-widest text-slate-400 font-medium mb-2">
                             Notes de passation
                           </p>
@@ -801,7 +868,7 @@ export default function ProjetDetailPage() {
                         <Archive className="size-8 text-amber-400" />
                       </div>
                       <div className="space-y-1">
-                        <p className="text-sm font-medium text-white">
+                        <p className="text-sm font-medium text-foreground">
                           Aucune carte d&apos;héritage
                         </p>
                         <p className="text-xs text-slate-400">
@@ -839,7 +906,7 @@ export default function ProjetDetailPage() {
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
                   <Target className="size-4 text-rose-400" />
-                  <h3 className="text-sm font-bold text-white">Journal de progression</h3>
+                  <h3 className="text-sm font-bold text-foreground">Journal de progression</h3>
                 </div>
                 <Button
                   onClick={handleProgress}
@@ -873,6 +940,14 @@ export default function ProjetDetailPage() {
           </Card>
         </motion.div>
       </div>
+
+      <AbandonProjectModal
+        open={abandonOpen}
+        projectTitle={project.title}
+        submitting={submittingAbandon}
+        onClose={() => !submittingAbandon && setAbandonOpen(false)}
+        onConfirm={handleAbandonConfirm}
+      />
     </main>
   );
 }

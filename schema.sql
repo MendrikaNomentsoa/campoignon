@@ -45,6 +45,8 @@ CREATE TABLE public.challenges (
   winner_id uuid,
   created_at timestamp with time zone DEFAULT now(),
   finished_at timestamp with time zone,
+  deadline timestamp with time zone,
+  project_status text NOT NULL DEFAULT 'active'::text CHECK (project_status = ANY (ARRAY['active'::text, 'paused'::text, 'adoptable'::text])),
   CONSTRAINT challenges_pkey PRIMARY KEY (id),
   CONSTRAINT challenges_community_id_fkey FOREIGN KEY (community_id) REFERENCES public.communities(id),
   CONSTRAINT challenges_creator_id_fkey FOREIGN KEY (creator_id) REFERENCES public.profiles(id),

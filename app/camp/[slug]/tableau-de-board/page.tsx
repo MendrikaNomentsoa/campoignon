@@ -60,16 +60,16 @@ export default function TableauDeBordCommunautePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-rose-900/80 flex items-center justify-center">
-        <Loader2 className="w-6 h-6 text-white/40 animate-spin" />
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="w-6 h-6 text-foreground/40 animate-spin" />
       </div>
     );
   }
 
   if (!communaute) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-rose-900/80 flex items-center justify-center">
-        <p className="text-white/60">Communauté introuvable</p>
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <p className="text-foreground/60">Communauté introuvable</p>
       </div>
     );
   }
@@ -123,11 +123,11 @@ export default function TableauDeBordCommunautePage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-rose-900/80 px-4 py-8 md:py-12">
+    <div className="min-h-screen bg-background px-4 py-8 md:py-12">
       <div className="max-w-3xl mx-auto space-y-8">
         <button
           onClick={() => router.push(`/camp/${slug}`)}
-          className="flex items-center gap-2 text-white/40 hover:text-white/70 text-sm transition-colors"
+          className="flex items-center gap-2 text-foreground/40 hover:text-foreground/70 text-sm transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
           Retour à la communauté
@@ -136,7 +136,7 @@ export default function TableauDeBordCommunautePage() {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="rounded-2xl p-8 border border-white/10 bg-white/5 backdrop-blur-sm relative overflow-hidden"
+          className="rounded-2xl p-8 border border-foreground/10 bg-foreground/5 backdrop-blur-sm relative overflow-hidden"
         >
           <div className={`absolute inset-0 bg-gradient-to-br ${style.gradient}`} />
           <div className="relative z-10">
@@ -145,20 +145,20 @@ export default function TableauDeBordCommunautePage() {
                 <Icone className="w-8 h-8 text-white" />
               </div>
               <div>
-                <p className="text-xs uppercase tracking-[0.2em] text-white/40 mb-1">
+                <p className="text-xs uppercase tracking-[0.2em] text-foreground/40 mb-1">
                   Communauté
                 </p>
-                <h1 className="text-3xl font-bold text-white">{communaute.name}</h1>
+                <h1 className="text-3xl font-bold text-foreground">{communaute.name}</h1>
               </div>
             </div>
 
-            <p className="text-white/60 max-w-xl leading-relaxed">
+            <p className="text-foreground/60 max-w-xl leading-relaxed">
               {communaute.description || style.description}
             </p>
 
             <div className="flex flex-wrap items-center gap-6 mt-5">
-              <div className="flex items-center gap-2 text-sm text-white/50">
-                <Users className="w-4 h-4 text-white/30" />
+              <div className="flex items-center gap-2 text-sm text-foreground/50">
+                <Users className="w-4 h-4 text-foreground/30" />
                 {communaute.membres.toLocaleString()} membre{communaute.membres > 1 ? "s" : ""}
               </div>
             </div>
@@ -177,14 +177,14 @@ export default function TableauDeBordCommunautePage() {
                 ${
                   activeSection === s.id
                     ? "border-rose-400 bg-rose-400/10 shadow-lg shadow-rose-400/20"
-                    : "border-white/10 bg-white/5 hover:border-white/30 hover:bg-white/10"
+                    : "border-foreground/10 bg-foreground/5 hover:border-foreground/30 hover:bg-foreground/10"
                 }`}
             >
               <div className={`p-3 rounded-xl bg-gradient-to-br ${s.couleur} w-fit mb-3`}>
                 <div className="text-white">{s.icon}</div>
               </div>
-              <p className="text-white font-medium">{s.label}</p>
-              <p className="text-white/40 text-xs mt-1">{s.description}</p>
+              <p className="text-foreground font-medium">{s.label}</p>
+              <p className="text-foreground/40 text-xs mt-1">{s.description}</p>
             </motion.button>
           ))}
         </div>
@@ -196,9 +196,9 @@ export default function TableauDeBordCommunautePage() {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
-              className="rounded-2xl p-6 border border-white/10 bg-white/5 space-y-4 overflow-hidden"
+              className="rounded-2xl p-6 border border-foreground/10 bg-foreground/5 space-y-4 overflow-hidden"
             >
-              <h3 className="text-white font-medium flex items-center gap-2">
+              <h3 className="text-foreground font-medium flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-rose-400" />
                 Nouvelle publication
               </h3>
@@ -207,7 +207,7 @@ export default function TableauDeBordCommunautePage() {
                 onChange={(e) => setContenuPublication(e.target.value)}
                 placeholder="Où en es-tu aujourd'hui ?"
                 rows={3}
-                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:border-rose-400 focus:outline-none transition-colors resize-none"
+                className="w-full px-4 py-3 rounded-xl bg-foreground/5 border border-foreground/10 text-foreground placeholder:text-foreground/30 focus:border-rose-400 focus:outline-none transition-colors resize-none"
               />
               <button
                 onClick={handlePublier}
@@ -225,16 +225,16 @@ export default function TableauDeBordCommunautePage() {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
-              className="rounded-2xl p-6 border border-white/10 bg-white/5 space-y-3 overflow-hidden"
+              className="rounded-2xl p-6 border border-foreground/10 bg-foreground/5 space-y-3 overflow-hidden"
             >
-              <h3 className="text-white font-medium flex items-center gap-2 mb-2">
+              <h3 className="text-foreground font-medium flex items-center gap-2 mb-2">
                 <Users className="w-4 h-4 text-blue-400" />
                 Membres de la communauté
               </h3>
               {membresParDefaut.map((m) => (
                 <div
                   key={m.nom}
-                  className="flex items-center gap-3 p-3 bg-white/5 rounded-xl border border-white/5"
+                  className="flex items-center gap-3 p-3 bg-foreground/5 rounded-xl border border-foreground/5"
                 >
                   <div
                     className={`w-10 h-10 rounded-full bg-gradient-to-br ${style.couleur} flex items-center justify-center text-white font-bold text-sm`}
@@ -243,8 +243,8 @@ export default function TableauDeBordCommunautePage() {
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
-                      <span className="text-white/80 font-medium text-sm">{m.nom}</span>
-                      <span className="text-white/20 text-[10px]">{m.role}</span>
+                      <span className="text-foreground/80 font-medium text-sm">{m.nom}</span>
+                      <span className="text-foreground/20 text-[10px]">{m.role}</span>
                     </div>
                   </div>
                 </div>
@@ -258,26 +258,26 @@ export default function TableauDeBordCommunautePage() {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
-              className="rounded-2xl p-6 border border-white/10 bg-white/5 space-y-4 overflow-hidden"
+              className="rounded-2xl p-6 border border-foreground/10 bg-foreground/5 space-y-4 overflow-hidden"
             >
-              <h3 className="text-white font-medium flex items-center gap-2">
+              <h3 className="text-foreground font-medium flex items-center gap-2">
                 <Target className="w-4 h-4 text-amber-400" />
                 Nouveau projet
               </h3>
 
               <div>
-                <label className="text-white/70 text-sm block mb-1">Titre du projet</label>
+                <label className="text-foreground/70 text-sm block mb-1">Titre du projet</label>
                 <input
                   type="text"
                   value={titreProjet}
                   onChange={(e) => setTitreProjet(e.target.value)}
                   placeholder="Ex : Mon projet"
-                  className="w-full px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:border-amber-400 focus:outline-none transition-colors"
+                  className="w-full px-4 py-2 rounded-xl bg-foreground/5 border border-foreground/10 text-foreground placeholder:text-foreground/30 focus:border-amber-400 focus:outline-none transition-colors"
                 />
               </div>
 
               <div>
-                <label className="text-white/70 text-sm block mb-1">Ajouter un document</label>
+                <label className="text-foreground/70 text-sm block mb-1">Ajouter un document</label>
                 <div
                   onDragOver={(e) => { e.preventDefault(); setIsDragOver(true); }}
                   onDragLeave={() => setIsDragOver(false)}
@@ -287,7 +287,7 @@ export default function TableauDeBordCommunautePage() {
                       ? "border-amber-400 bg-amber-400/10"
                       : pdfFile
                       ? "border-emerald-400 bg-emerald-400/5"
-                      : "border-white/10 hover:border-amber-400/50 hover:bg-white/5"
+                      : "border-foreground/10 hover:border-amber-400/50 hover:bg-foreground/5"
                     }`}
                 >
                   <input
@@ -299,12 +299,12 @@ export default function TableauDeBordCommunautePage() {
                   {pdfFile ? (
                     <div className="flex items-center justify-center gap-3">
                       <FileText className="w-6 h-6 text-emerald-400" />
-                      <p className="text-white text-sm">{pdfFile.name}</p>
+                      <p className="text-foreground text-sm">{pdfFile.name}</p>
                     </div>
                   ) : (
                     <>
-                      <Upload className="w-6 h-6 text-white/30 mx-auto mb-2" />
-                      <p className="text-white/40 text-sm">
+                      <Upload className="w-6 h-6 text-foreground/30 mx-auto mb-2" />
+                      <p className="text-foreground/40 text-sm">
                         Glisse ton fichier ici ou clique pour sélectionner
                       </p>
                     </>
@@ -325,7 +325,7 @@ export default function TableauDeBordCommunautePage() {
         </AnimatePresence>
 
         <div className="space-y-4 pt-4">
-          <h3 className="text-white/50 text-sm font-medium uppercase tracking-wider flex items-center gap-2">
+          <h3 className="text-foreground/50 text-sm font-medium uppercase tracking-wider flex items-center gap-2">
             <Brain className="w-4 h-4" />
             Outils IA
           </h3>
@@ -337,7 +337,7 @@ export default function TableauDeBordCommunautePage() {
         </div>
 
         <div className="space-y-4 pt-4">
-          <h3 className="text-white/50 text-sm font-medium uppercase tracking-wider">
+          <h3 className="text-foreground/50 text-sm font-medium uppercase tracking-wider">
             Publications de la communauté
           </h3>
           {publicationsParDefaut.map((pub, index) => (
@@ -346,7 +346,7 @@ export default function TableauDeBordCommunautePage() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.05 }}
-              className="rounded-xl p-5 border border-white/5 bg-white/5 hover:border-white/20 transition-all"
+              className="rounded-xl p-5 border border-foreground/5 bg-foreground/5 hover:border-foreground/20 transition-all"
             >
               <div className="flex items-start gap-3">
                 <div
@@ -356,21 +356,21 @@ export default function TableauDeBordCommunautePage() {
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center justify-between">
-                    <span className="text-white/80 font-medium text-sm">{pub.auteur}</span>
-                    <span className="text-white/30 text-xs">{pub.date}</span>
+                    <span className="text-foreground/80 font-medium text-sm">{pub.auteur}</span>
+                    <span className="text-foreground/30 text-xs">{pub.date}</span>
                   </div>
-                  <h4 className="text-white font-medium mt-1">{pub.titre}</h4>
-                  <p className="text-white/50 text-sm mt-1">{pub.contenu}</p>
+                  <h4 className="text-foreground font-medium mt-1">{pub.titre}</h4>
+                  <p className="text-foreground/50 text-sm mt-1">{pub.contenu}</p>
                   <div className="flex items-center gap-4 mt-3">
-                    <button className="flex items-center gap-1 text-white/30 hover:text-rose-400 transition-colors text-xs">
+                    <button className="flex items-center gap-1 text-foreground/30 hover:text-rose-400 transition-colors text-xs">
                       <Heart className="w-4 h-4" />
                       {pub.likes}
                     </button>
-                    <button className="flex items-center gap-1 text-white/30 hover:text-rose-400 transition-colors text-xs">
+                    <button className="flex items-center gap-1 text-foreground/30 hover:text-rose-400 transition-colors text-xs">
                       <MessageCircle className="w-4 h-4" />
                       {pub.commentaires}
                     </button>
-                    <button className="flex items-center gap-1 text-white/30 hover:text-rose-400 transition-colors text-xs">
+                    <button className="flex items-center gap-1 text-foreground/30 hover:text-rose-400 transition-colors text-xs">
                       <Share2 className="w-4 h-4" />
                       Partager
                     </button>

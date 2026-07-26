@@ -222,7 +222,7 @@ export function Message({
                 </button>
 
                 {showReactions && (
-                  <div className="absolute bottom-full left-0 mb-1 bg-white rounded-xl shadow-lg border p-2 flex gap-1 z-10">
+                  <div className="absolute bottom-full left-0 mb-1 bg-card rounded-xl shadow-lg border p-2 flex gap-1 z-10">
                     {REACTIONS.map(({ emoji, label }) => (
                       <button
                         key={emoji}
@@ -248,7 +248,7 @@ export function Message({
                   </button>
 
                   {showActions && (
-                    <div className="absolute right-0 mt-1 bg-white rounded-lg shadow-lg border py-1 z-10 min-w-[150px]">
+                    <div className="absolute right-0 mt-1 bg-card rounded-lg shadow-lg border py-1 z-10 min-w-[150px]">
                       <button
                         onClick={() => {
                           setIsEditing(true);

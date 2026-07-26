@@ -225,7 +225,7 @@ export default function NouveauProjetPage() {
               <div className="space-y-2">
                 <p className="text-sm font-medium text-slate-700">Ressources ajoutées ({resources.length})</p>
                 {resources.map((resource, index) => (
-                  <div key={index} className="flex items-center justify-between rounded-lg border bg-white p-3">
+                  <div key={index} className="flex items-center justify-between rounded-lg border bg-card p-3">
                     <div className="flex items-center gap-3">
                       {resource.type === "pdf" ? (
                         <div className="flex size-9 items-center justify-center rounded-lg bg-red-100">

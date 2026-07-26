@@ -32,7 +32,7 @@ export async function POST(request: Request) {
   }
 
   const body = await request.json();
-  const { community_id, title, description, reward } = body;
+  const { community_id, title, description, reward, deadline } = body;
 
   if (!community_id || !title) {
     return NextResponse.json(
@@ -47,6 +47,7 @@ export async function POST(request: Request) {
     title,
     description,
     reward,
+    deadline,
   });
 
   if ('error' in result) {

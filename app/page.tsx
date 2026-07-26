@@ -12,7 +12,6 @@ import {
   Sparkles,
   Shield,
   Zap,
-  ChevronRight,
 } from "lucide-react";
 import { BarreNavigation } from "@/components/navigation/BarreNavigation";
 import { PiedPage } from "@/components/navigation/PiedPage";
@@ -62,7 +61,7 @@ const fadeUp = {
 
 export default function HomePage() {
   return (
-    <div className="flex min-h-screen flex-col bg-[#0c0204]">
+    <div className="flex min-h-screen flex-col bg-background">
       <BarreNavigation />
 
       {/* HERO */}
@@ -104,8 +103,8 @@ export default function HomePage() {
               transition={{ delay: 0.2 }}
               className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#a92940]/20 bg-[#a92940]/10 px-4 py-1.5 backdrop-blur-sm"
             >
-              <Sparkles className="size-3.5 text-[#d8699e]" />
-              <span className="text-xs font-medium tracking-wide text-[#f6dce9]/80">
+              <Sparkles className="size-3.5 text-[#a92940] dark:text-[#d8699e]" />
+              <span className="text-xs font-medium tracking-wide text-[#62121b]/80 dark:text-[#f6dce9]/80">
                 Plateforme communautaire propulsée par l&apos;IA
               </span>
             </motion.div>
@@ -115,10 +114,10 @@ export default function HomePage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="text-4xl font-bold leading-tight tracking-tight text-white sm:text-5xl lg:text-6xl"
+              className="text-4xl font-bold leading-tight tracking-tight text-foreground sm:text-5xl lg:text-6xl"
             >
               Vos projets méritent{" "}
-              <span className="bg-gradient-to-r from-[#d8699e] via-[#f6dce9] to-[#d8699e] bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-[#a92940] via-[#62121b] to-[#a92940] bg-clip-text text-transparent dark:from-[#d8699e] dark:via-[#f6dce9] dark:to-[#d8699e]">
                 une communauté
               </span>{" "}
               qui avance
@@ -128,7 +127,7 @@ export default function HomePage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-white/50"
+              className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-foreground/50"
             >
               Campoignon rassemble vos équipes, structure vos projets et
               accompagne chaque pas — avec un compagnon IA qui relance sans
@@ -149,19 +148,12 @@ export default function HomePage() {
                 Commencer gratuitement
                 <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
               </Link>
-              <Link
-                href="/choix-communaute"
-                className="group inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-7 py-3.5 text-sm font-medium text-white/70 backdrop-blur-sm transition-all duration-300 hover:border-white/20 hover:bg-white/10 hover:text-white"
-              >
-                Explorer les communautés
-                <ChevronRight className="size-4 transition-transform group-hover:translate-x-0.5" />
-              </Link>
             </motion.div>
           </motion.div>
         </div>
 
         {/* Bottom gradient fade */}
-        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#0c0204] to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent" />
       </section>
 
       {/* STATS BAR */}
@@ -171,15 +163,15 @@ export default function HomePage() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-white/5 bg-white/5 sm:grid-cols-4"
+            className="grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-foreground/5 bg-foreground/5 sm:grid-cols-4"
           >
             {stats.map((stat) => (
               <div
                 key={stat.label}
-                className="bg-[#0c0204]/80 px-6 py-5 text-center backdrop-blur-sm"
+                className="bg-background/80 px-6 py-5 text-center backdrop-blur-sm"
               >
-                <p className="text-2xl font-bold text-white">{stat.value}</p>
-                <p className="mt-1 text-xs font-medium text-white/40">
+                <p className="text-2xl font-bold text-foreground">{stat.value}</p>
+                <p className="mt-1 text-xs font-medium text-foreground/40">
                   {stat.label}
                 </p>
               </div>
@@ -200,10 +192,10 @@ export default function HomePage() {
             <p className="mb-3 text-xs font-semibold uppercase tracking-[0.25em] text-[#a92940]">
               Fonctionnalités
             </p>
-            <h2 className="text-3xl font-bold text-white sm:text-4xl">
+            <h2 className="text-3xl font-bold text-foreground sm:text-4xl">
               Tout ce qu&apos;il faut, rien de trop
             </h2>
-            <p className="mx-auto mt-4 max-w-lg text-white/40">
+            <p className="mx-auto mt-4 max-w-lg text-foreground/40">
               Une plateforme pensée pour les équipes qui veulent avancer
               sans friction.
             </p>
@@ -218,7 +210,7 @@ export default function HomePage() {
                   {...fadeUp}
                   transition={{ delay: 0.1 + i * 0.1 }}
                   viewport={{ once: true }}
-                  className="group relative overflow-hidden rounded-2xl border border-white/5 bg-white/[0.02] p-8 transition-all duration-500 hover:border-[#a92940]/20 hover:bg-white/[0.04]"
+                  className="group relative overflow-hidden rounded-2xl border border-foreground/5 bg-foreground/[0.02] p-8 transition-all duration-500 hover:border-[#a92940]/20 hover:bg-foreground/[0.04]"
                 >
                   <div
                     className={`absolute -top-24 -right-24 size-48 rounded-full bg-gradient-to-br ${feature.gradient} opacity-[0.07] blur-3xl transition-opacity duration-500 group-hover:opacity-[0.12]`}
@@ -229,10 +221,10 @@ export default function HomePage() {
                     >
                       <Icon className="size-5 text-white" />
                     </div>
-                    <h3 className="mb-2 text-lg font-semibold text-white">
+                    <h3 className="mb-2 text-lg font-semibold text-foreground">
                       {feature.title}
                     </h3>
-                    <p className="text-sm leading-relaxed text-white/45">
+                    <p className="text-sm leading-relaxed text-foreground/45">
                       {feature.description}
                     </p>
                   </div>
@@ -244,7 +236,7 @@ export default function HomePage() {
       </section>
 
       {/* HOW IT WORKS */}
-      <section className="relative border-t border-white/5 py-28">
+      <section className="relative border-t border-foreground/5 py-28">
         <div className="mx-auto max-w-6xl px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -255,7 +247,7 @@ export default function HomePage() {
             <p className="mb-3 text-xs font-semibold uppercase tracking-[0.25em] text-[#a92940]">
               Comment ça marche
             </p>
-            <h2 className="text-3xl font-bold text-white sm:text-4xl">
+            <h2 className="text-3xl font-bold text-foreground sm:text-4xl">
               De l&apos;inscription à l&apos;action, en trois étapes
             </h2>
           </motion.div>
@@ -291,15 +283,15 @@ export default function HomePage() {
                   className="relative text-center"
                 >
                   <div className="mb-6 inline-flex size-14 items-center justify-center rounded-2xl border border-[#a92940]/20 bg-[#a92940]/10">
-                    <Icon className="size-6 text-[#d8699e]" />
+                    <Icon className="size-6 text-[#a92940] dark:text-[#d8699e]" />
                   </div>
                   <div className="mb-2 text-xs font-bold uppercase tracking-widest text-[#a92940]/60">
                     Étape {item.step}
                   </div>
-                  <h3 className="mb-2 text-lg font-semibold text-white">
+                  <h3 className="mb-2 text-lg font-semibold text-foreground">
                     {item.title}
                   </h3>
-                  <p className="text-sm leading-relaxed text-white/40">
+                  <p className="text-sm leading-relaxed text-foreground/40">
                     {item.desc}
                   </p>
                 </motion.div>

@@ -1,5 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
+import { ChallengeNotificationBell } from "@/components/challenges/ChallengeNotificationBell";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export default async function CampLayout({
   children,
@@ -11,8 +13,8 @@ export default async function CampLayout({
   const { slug } = await params;
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#0c0204]">
-      <header className="sticky top-0 z-50 border-b border-white/5 bg-[#0c0204]/80 backdrop-blur-xl">
+    <div className="flex min-h-screen flex-col bg-background">
+      <header className="sticky top-0 z-50 border-b border-foreground/5 bg-background/80 backdrop-blur-xl">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
           <Link href="/" className="flex items-center gap-2.5">
             <Image
@@ -22,7 +24,7 @@ export default async function CampLayout({
               height={28}
               className="h-7 w-7 object-contain"
             />
-            <span className="text-sm font-bold text-white">Campoignon</span>
+            <span className="text-sm font-bold text-foreground">Campoignon</span>
           </Link>
 
           <nav className="hidden items-center gap-1 md:flex">
@@ -35,7 +37,7 @@ export default async function CampLayout({
               <Link
                 key={link.label}
                 href={link.href}
-                className="rounded-lg px-3.5 py-2 text-sm font-medium text-white/50 transition-colors hover:bg-white/5 hover:text-white/80"
+                className="rounded-lg px-3.5 py-2 text-sm font-medium text-foreground/50 transition-colors hover:bg-foreground/5 hover:text-foreground/80"
               >
                 {link.label}
               </Link>
@@ -43,15 +45,17 @@ export default async function CampLayout({
           </nav>
 
           <div className="flex items-center gap-3">
+            <ChallengeNotificationBell />
+            <ThemeToggle />
             <Link
               href="/choix-communaute"
-              className="hidden text-sm font-medium text-white/40 transition-colors hover:text-white/70 sm:inline-block"
+              className="hidden text-sm font-medium text-foreground/40 transition-colors hover:text-foreground/70 sm:inline-block"
             >
               Changer
             </Link>
             <Link
               href="/"
-              className="inline-flex items-center gap-1.5 rounded-lg bg-white/5 border border-white/10 px-4 py-2 text-xs font-medium text-white/60 transition-all hover:bg-white/10 hover:text-white"
+              className="inline-flex items-center gap-1.5 rounded-lg bg-foreground/5 border border-foreground/10 px-4 py-2 text-xs font-medium text-foreground/60 transition-all hover:bg-foreground/10 hover:text-foreground"
             >
               Accueil
             </Link>

@@ -5,7 +5,9 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plus, FileText, Clock, Loader2, Sparkles } from "lucide-react";
+import { Plus, FileText, Clock, Loader2, Sparkles, Trash2 } from "lucide-react";
+import { ProjectStatusBadge, type ProjectStatus } from "@/components/projects/ProjectStatusBadge";
+import { AbandonProjectModal, type AbandonChoice } from "@/components/projects/AbandonProjectModal";
 
 interface Project {
   id: string;
@@ -17,6 +19,7 @@ interface Project {
   created_by: string | null;
   community_id: string | null;
   challenge_id: string | null;
+  project_status: ProjectStatus;
 }
 
 export default function ProjetsPage() {
@@ -27,6 +30,16 @@ export default function ProjetsPage() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [generatingId, setGeneratingId] = useState<string | null>(null);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [abandonTarget, setAbandonTarget] = useState<Project | null>(null);
+  const [submittingAbandon, setSubmittingAbandon] = useState(false);
+
+  useEffect(() => {
+    fetch("/api/auth/me")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => setCurrentUserId(data?.user?.id ?? null))
+      .catch(() => setCurrentUserId(null));
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -63,6 +76,29 @@ export default function ProjetsPage() {
       console.error("Erreur génération IA:", err);
     } finally {
       setGeneratingId(null);
+    }
+  };
+
+  const handleAbandonConfirm = async (choice: AbandonChoice) => {
+    if (!abandonTarget) return;
+    setSubmittingAbandon(true);
+    try {
+      const res = await fetch(`/api/projects/${abandonTarget.id}/status`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ project_status: choice }),
+      });
+      if (res.ok) {
+        const { project: updated } = await res.json();
+        setProjects((prev) =>
+          prev.map((p) => (p.id === abandonTarget.id ? { ...p, project_status: updated.project_status } : p))
+        );
+        setAbandonTarget(null);
+      }
+    } catch (err) {
+      console.error("Erreur changement de statut:", err);
+    } finally {
+      setSubmittingAbandon(false);
     }
   };
 
@@ -109,7 +145,10 @@ export default function ProjetsPage() {
               <Link key={project.id} href={`/camp/${slug}/projets/${project.id}`} className="block">
                 <Card className="h-full transition-shadow hover:shadow-md">
                   <CardHeader>
-                    <CardTitle className="text-lg leading-tight">{project.title}</CardTitle>
+                    <div className="flex items-start justify-between gap-2">
+                      <CardTitle className="text-lg leading-tight">{project.title}</CardTitle>
+                      <ProjectStatusBadge status={project.project_status} />
+                    </div>
                     {project.description && (
                       <CardDescription className="line-clamp-2">{project.description}</CardDescription>
                     )}
@@ -125,7 +164,7 @@ export default function ProjetsPage() {
                         <span>{new Date(project.created_at).toLocaleDateString("fr-FR")}</span>
                       </div>
                     </div>
-                    <div className="mt-3">
+                    <div className="mt-3 flex items-center gap-2">
                       <button
                         onClick={(e) => handleGenerateIA(e, project.id)}
                         disabled={generatingId === project.id}
@@ -138,6 +177,19 @@ export default function ProjetsPage() {
                         )}
                         Générer IA
                       </button>
+                      {project.created_by === currentUserId && (
+                        <button
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            setAbandonTarget(project);
+                          }}
+                          className="flex items-center gap-1.5 rounded-lg bg-red-500/10 px-3 py-1.5 text-xs font-medium text-red-500 hover:bg-red-500/20 transition-colors"
+                        >
+                          <Trash2 className="size-3" />
+                          Supprimer
+                        </button>
+                      )}
                     </div>
                   </CardContent>
                 </Card>
@@ -162,6 +214,14 @@ export default function ProjetsPage() {
           </Card>
         )}
       </div>
+
+      <AbandonProjectModal
+        open={!!abandonTarget}
+        projectTitle={abandonTarget?.title ?? ""}
+        submitting={submittingAbandon}
+        onClose={() => !submittingAbandon && setAbandonTarget(null)}
+        onConfirm={handleAbandonConfirm}
+      />
     </main>
   );
 }

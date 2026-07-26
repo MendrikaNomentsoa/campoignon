@@ -218,7 +218,7 @@ export default function RessourcesProjetPage() {
             {resources.length > 0 ? (
               <div className="space-y-2">
                 {resources.map((resource, index) => (
-                  <div key={index} className="flex items-center justify-between rounded-lg border bg-white p-4 transition-colors hover:bg-slate-50">
+                  <div key={index} className="flex items-center justify-between rounded-lg border bg-card p-4 transition-colors hover:bg-slate-50">
                     <div className="flex items-center gap-4">
                       {resource.type === "pdf" ? (
                         <div className="flex size-10 items-center justify-center rounded-lg bg-red-100">

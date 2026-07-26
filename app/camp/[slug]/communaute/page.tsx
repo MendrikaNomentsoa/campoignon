@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import {
@@ -20,9 +20,11 @@ import {
   MessageCircle,
   Loader2,
   Brain,
+  Trophy,
 } from "lucide-react";
 import { fetchCommunity, getCommunityStyle, type CommunityData } from "@/lib/communityStyles";
 import { MediatorPanel } from "@/components/ai/MediatorPanel";
+import { ChallengesPanel } from "@/components/challenges/ChallengesPanel";
 
 const stats = [
   { label: "Membres", value: 0, icon: <Users className="w-5 h-5" />, color: "bg-blue-500/20" },
@@ -52,8 +54,9 @@ const topContributeurs = [
 
 export default function CommunautePage() {
   const params = useParams();
+  const searchParams = useSearchParams();
   const slug = params?.slug as string;
-  const [activeTab, setActiveTab] = useState("publications");
+  const [activeTab, setActiveTab] = useState(searchParams.get("tab") || "publications");
   const [communaute, setCommunaute] = useState<CommunityData | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -67,7 +70,7 @@ export default function CommunautePage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <Loader2 className="w-6 h-6 text-white/40 animate-spin" />
+        <Loader2 className="w-6 h-6 text-foreground/40 animate-spin" />
       </div>
     );
   }
@@ -75,7 +78,7 @@ export default function CommunautePage() {
   if (!communaute) {
     return (
       <div className="text-center py-20">
-        <p className="text-white/60">Communauté introuvable</p>
+        <p className="text-foreground/60">Communauté introuvable</p>
       </div>
     );
   }
@@ -101,8 +104,8 @@ export default function CommunautePage() {
             <Icone className="w-8 h-8 text-white" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-white">Communauté</h1>
-            <p className="text-white/40 text-sm">
+            <h1 className="text-2xl font-bold text-foreground">Communauté</h1>
+            <p className="text-foreground/40 text-sm">
               {communaute.name} · {communaute.membres} membre{communaute.membres > 1 ? "s" : ""}
             </p>
           </div>
@@ -111,8 +114,8 @@ export default function CommunautePage() {
         <div className="flex items-center gap-3">
           <Link
             href={`/camp/${slug}/communaute/membres`}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 
-                       text-white/60 hover:text-white/90 transition-colors text-sm"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-foreground/5 hover:bg-foreground/10
+                       text-foreground/60 hover:text-foreground/90 transition-colors text-sm"
           >
             <UserPlus className="w-4 h-4" />
             Voir les membres
@@ -139,14 +142,14 @@ export default function CommunautePage() {
         {statsValues.map((stat, index) => (
           <div
             key={index}
-            className="bg-white/5 backdrop-blur-sm rounded-xl p-4 border border-white/5 
-                       hover:border-white/20 transition-all duration-300"
+            className="bg-foreground/5 backdrop-blur-sm rounded-xl p-4 border border-foreground/5
+                       hover:border-foreground/20 transition-all duration-300"
           >
             <div className="flex items-center gap-3">
               <div className={`p-2 rounded-lg ${stat.color}`}>{stat.icon}</div>
               <div>
-                <p className="text-white/40 text-xs">{stat.label}</p>
-                <p className="text-white font-bold text-lg">{stat.value}</p>
+                <p className="text-foreground/40 text-xs">{stat.label}</p>
+                <p className="text-foreground font-bold text-lg">{stat.value}</p>
               </div>
             </div>
           </div>
@@ -157,11 +160,12 @@ export default function CommunautePage() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.15 }}
-        className="flex gap-1 p-1 bg-white/5 rounded-xl border border-white/5 w-full md:w-auto overflow-x-auto"
+        className="flex gap-1 p-1 bg-foreground/5 rounded-xl border border-foreground/5 w-full md:w-auto overflow-x-auto"
       >
         {[
           { id: "publications", label: "Publications", icon: <FileText className="w-4 h-4" /> },
           { id: "discussions", label: "Discussions", icon: <MessageSquare className="w-4 h-4" /> },
+          { id: "defis", label: "Défis", icon: <Trophy className="w-4 h-4" /> },
           { id: "membres", label: "Membres", icon: <Users className="w-4 h-4" /> },
           { id: "classement", label: "Classement", icon: <TrendingUp className="w-4 h-4" /> },
           { id: "assistant", label: "Assistant IA", icon: <Brain className="w-4 h-4" /> },
@@ -174,7 +178,7 @@ export default function CommunautePage() {
                        ${
                          activeTab === tab.id
                            ? "bg-rose-400/20 text-rose-300 border border-rose-400/30"
-                           : "text-white/40 hover:text-white/70 hover:bg-white/5"
+                           : "text-foreground/40 hover:text-foreground/70 hover:bg-foreground/5"
                        }`}
           >
             {tab.icon}
@@ -197,33 +201,33 @@ export default function CommunautePage() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2 + index * 0.05 }}
-                  className="bg-white/5 backdrop-blur-sm rounded-xl p-5 border border-white/5 
-                             hover:border-white/20 transition-all duration-300"
+                  className="bg-foreground/5 backdrop-blur-sm rounded-xl p-5 border border-foreground/5
+                             hover:border-foreground/20 transition-all duration-300"
                 >
                   <div className="flex items-start gap-3">
-                    <div className={`w-10 h-10 rounded-full bg-linear-to-br ${style.couleur} 
+                    <div className={`w-10 h-10 rounded-full bg-linear-to-br ${style.couleur}
                                   flex items-center justify-center text-white font-bold text-sm flex-shrink-0`}>
                       {pub.avatar}
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center justify-between">
                         <div>
-                          <span className="text-white/80 font-medium">{pub.auteur}</span>
-                          <span className="text-white/30 text-xs ml-2">{pub.date}</span>
+                          <span className="text-foreground/80 font-medium">{pub.auteur}</span>
+                          <span className="text-foreground/30 text-xs ml-2">{pub.date}</span>
                         </div>
                       </div>
-                      <h4 className="text-white font-medium mt-1">{pub.titre}</h4>
-                      <p className="text-white/50 text-sm mt-1">{pub.contenu}</p>
+                      <h4 className="text-foreground font-medium mt-1">{pub.titre}</h4>
+                      <p className="text-foreground/50 text-sm mt-1">{pub.contenu}</p>
                       <div className="flex items-center gap-4 mt-3">
-                        <button className="flex items-center gap-1 text-white/30 hover:text-rose-400 transition-colors text-xs">
+                        <button className="flex items-center gap-1 text-foreground/30 hover:text-rose-400 transition-colors text-xs">
                           <ThumbsUp className="w-4 h-4" />
                           {pub.likes}
                         </button>
-                        <button className="flex items-center gap-1 text-white/30 hover:text-rose-400 transition-colors text-xs">
+                        <button className="flex items-center gap-1 text-foreground/30 hover:text-rose-400 transition-colors text-xs">
                           <MessageCircle className="w-4 h-4" />
                           {pub.commentaires}
                         </button>
-                        <button className="flex items-center gap-1 text-white/30 hover:text-rose-400 transition-colors text-xs">
+                        <button className="flex items-center gap-1 text-foreground/30 hover:text-rose-400 transition-colors text-xs">
                           <Share2 className="w-4 h-4" />
                           Partager
                         </button>
@@ -235,7 +239,7 @@ export default function CommunautePage() {
 
               <Link
                 href={`/camp/${slug}/communaute/publications`}
-                className="block text-center text-white/30 hover:text-white/60 text-sm py-2 transition-colors"
+                className="block text-center text-foreground/30 hover:text-foreground/60 text-sm py-2 transition-colors"
               >
                 Voir toutes les publications →
               </Link>
@@ -248,26 +252,26 @@ export default function CommunautePage() {
               animate={{ opacity: 1, x: 0 }}
               className="space-y-4"
             >
-              <div className="bg-white/5 backdrop-blur-sm rounded-xl p-5 border border-white/5 
-                            hover:border-white/20 transition-all duration-300 cursor-pointer">
+              <div className="bg-foreground/5 backdrop-blur-sm rounded-xl p-5 border border-foreground/5
+                            hover:border-foreground/20 transition-all duration-300 cursor-pointer">
                 <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 rounded-full bg-linear-to-br from-amber-400 to-orange-500 
+                  <div className="w-10 h-10 rounded-full bg-linear-to-br from-amber-400 to-orange-500
                                 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
                     M
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center justify-between">
-                      <span className="text-white/80 font-medium">Marie Curie</span>
-                      <span className="text-white/30 text-xs">Il y a 3h</span>
+                      <span className="text-foreground/80 font-medium">Marie Curie</span>
+                      <span className="text-foreground/30 text-xs">Il y a 3h</span>
                     </div>
-                    <h4 className="text-white font-medium mt-1">Quel est votre livre préféré ?</h4>
-                    <p className="text-white/50 text-sm mt-1">Je cherche des recommandations de lecture...</p>
+                    <h4 className="text-foreground font-medium mt-1">Quel est votre livre préféré ?</h4>
+                    <p className="text-foreground/50 text-sm mt-1">Je cherche des recommandations de lecture...</p>
                     <div className="flex items-center gap-4 mt-3">
-                      <span className="flex items-center gap-1 text-white/30 text-xs">
+                      <span className="flex items-center gap-1 text-foreground/30 text-xs">
                         <MessageCircle className="w-4 h-4" />
                         12 réponses
                       </span>
-                      <span className="flex items-center gap-1 text-white/30 text-xs">
+                      <span className="flex items-center gap-1 text-foreground/30 text-xs">
                         <Eye className="w-4 h-4" />
                         45 vues
                       </span>
@@ -278,10 +282,19 @@ export default function CommunautePage() {
 
               <Link
                 href={`/camp/${slug}/communaute/discussions`}
-                className="block text-center text-white/30 hover:text-white/60 text-sm py-2 transition-colors"
+                className="block text-center text-foreground/30 hover:text-foreground/60 text-sm py-2 transition-colors"
               >
                 Voir toutes les discussions →
               </Link>
+            </motion.div>
+          )}
+
+          {activeTab === "defis" && (
+            <motion.div
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+            >
+              <ChallengesPanel communityId={communaute.id} />
             </motion.div>
           )}
 
@@ -297,17 +310,17 @@ export default function CommunautePage() {
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.2 + index * 0.05 }}
-                  className="flex items-center gap-3 p-3 bg-white/5 rounded-xl border border-white/5 
-                             hover:border-white/20 transition-all duration-300"
+                  className="flex items-center gap-3 p-3 bg-foreground/5 rounded-xl border border-foreground/5
+                             hover:border-foreground/20 transition-all duration-300"
                 >
-                  <div className={`w-10 h-10 rounded-full bg-linear-to-br ${style.couleur} 
+                  <div className={`w-10 h-10 rounded-full bg-linear-to-br ${style.couleur}
                                 flex items-center justify-center text-white font-bold text-sm flex-shrink-0`}>
                     {membre.avatar}
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
-                      <span className="text-white/80 font-medium">{membre.nom}</span>
-                      <span className="text-white/20 text-[10px]">{membre.role}</span>
+                      <span className="text-foreground/80 font-medium">{membre.nom}</span>
+                      <span className="text-foreground/20 text-[10px]">{membre.role}</span>
                     </div>
                   </div>
                 </motion.div>
@@ -315,7 +328,7 @@ export default function CommunautePage() {
 
               <Link
                 href={`/camp/${slug}/communaute/membres`}
-                className="block text-center text-white/30 hover:text-white/60 text-sm py-2 transition-colors"
+                className="block text-center text-foreground/30 hover:text-foreground/60 text-sm py-2 transition-colors"
               >
                 Voir tous les membres →
               </Link>
@@ -334,32 +347,32 @@ export default function CommunautePage() {
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.2 + index * 0.05 }}
-                  className="flex items-center gap-3 p-3 bg-white/5 rounded-xl border border-white/5 
-                             hover:border-white/20 transition-all duration-300"
+                  className="flex items-center gap-3 p-3 bg-foreground/5 rounded-xl border border-foreground/5
+                             hover:border-foreground/20 transition-all duration-300"
                 >
-                  <div className="text-white/30 text-sm font-bold w-6 text-center">
+                  <div className="text-foreground/30 text-sm font-bold w-6 text-center">
                     {index + 1}
                   </div>
-                  <div className={`w-10 h-10 rounded-full bg-linear-to-br ${style.couleur} 
+                  <div className={`w-10 h-10 rounded-full bg-linear-to-br ${style.couleur}
                                 flex items-center justify-center text-white font-bold text-sm flex-shrink-0`}>
                     {membre.avatar}
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
-                      <span className="text-white/80 font-medium">{membre.nom}</span>
-                      <span className="text-white/20 text-[10px]">{membre.role}</span>
+                      <span className="text-foreground/80 font-medium">{membre.nom}</span>
+                      <span className="text-foreground/20 text-[10px]">{membre.role}</span>
                     </div>
                   </div>
                   <div className="flex items-center gap-1">
                     <Star className="w-3 h-3 text-amber-400/60" />
-                    <span className="text-white/40 text-sm font-medium">{membre.points}</span>
+                    <span className="text-foreground/40 text-sm font-medium">{membre.points}</span>
                   </div>
                 </motion.div>
               ))}
 
               <Link
                 href={`/camp/${slug}/communaute/classement`}
-                className="block text-center text-white/30 hover:text-white/60 text-sm py-2 transition-colors"
+                className="block text-center text-foreground/30 hover:text-foreground/60 text-sm py-2 transition-colors"
               >
                 Voir le classement complet →
               </Link>
@@ -382,23 +395,23 @@ export default function CommunautePage() {
             initial={{ opacity: 0, x: 10 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2 }}
-            className="bg-white/5 backdrop-blur-sm rounded-xl p-5 border border-white/5"
+            className="bg-foreground/5 backdrop-blur-sm rounded-xl p-5 border border-foreground/5"
           >
-            <h3 className="text-white/60 text-sm font-medium mb-3 flex items-center gap-2">
+            <h3 className="text-foreground/60 text-sm font-medium mb-3 flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
               Membres en ligne
             </h3>
 
             <div className="space-y-2">
               {membresEnLigne.map((membre, index) => (
-                <div key={index} className="flex items-center gap-3 p-2 bg-white/5 rounded-lg">
-                  <div className={`w-8 h-8 rounded-full bg-linear-to-br ${style.couleur} 
+                <div key={index} className="flex items-center gap-3 p-2 bg-foreground/5 rounded-lg">
+                  <div className={`w-8 h-8 rounded-full bg-linear-to-br ${style.couleur}
                                 flex items-center justify-center text-white font-bold text-xs`}>
                     {membre.avatar}
                   </div>
                   <div className="flex-1">
-                    <p className="text-white/70 text-sm">{membre.nom}</p>
-                    <p className="text-white/20 text-[10px]">{membre.role}</p>
+                    <p className="text-foreground/70 text-sm">{membre.nom}</p>
+                    <p className="text-foreground/20 text-[10px]">{membre.role}</p>
                   </div>
                   <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
                 </div>
@@ -410,30 +423,30 @@ export default function CommunautePage() {
             initial={{ opacity: 0, x: 10 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.25 }}
-            className="bg-white/5 backdrop-blur-sm rounded-xl p-5 border border-white/5"
+            className="bg-foreground/5 backdrop-blur-sm rounded-xl p-5 border border-foreground/5"
           >
-            <h3 className="text-white/60 text-sm font-medium mb-3 flex items-center gap-2">
+            <h3 className="text-foreground/60 text-sm font-medium mb-3 flex items-center gap-2">
               <Crown className="w-4 h-4 text-amber-400" />
               Top contributeurs
             </h3>
 
             <div className="space-y-2">
               {topContributeurs.map((membre, index) => (
-                <div key={index} className="flex items-center gap-3 p-2 bg-white/5 rounded-lg">
-                  <div className="text-white/30 text-xs font-bold w-4">
+                <div key={index} className="flex items-center gap-3 p-2 bg-foreground/5 rounded-lg">
+                  <div className="text-foreground/30 text-xs font-bold w-4">
                     {index + 1}
                   </div>
-                  <div className={`w-8 h-8 rounded-full bg-linear-to-br ${style.couleur} 
+                  <div className={`w-8 h-8 rounded-full bg-linear-to-br ${style.couleur}
                                 flex items-center justify-center text-white font-bold text-xs`}>
                     {membre.avatar}
                   </div>
                   <div className="flex-1">
-                    <p className="text-white/70 text-sm">{membre.nom}</p>
-                    <p className="text-white/20 text-[10px]">{membre.role}</p>
+                    <p className="text-foreground/70 text-sm">{membre.nom}</p>
+                    <p className="text-foreground/20 text-[10px]">{membre.role}</p>
                   </div>
                   <div className="flex items-center gap-1">
                     <Star className="w-3 h-3 text-amber-400/60" />
-                    <span className="text-white/30 text-xs">{membre.points}</span>
+                    <span className="text-foreground/30 text-xs">{membre.points}</span>
                   </div>
                 </div>
               ))}
@@ -444,27 +457,27 @@ export default function CommunautePage() {
             initial={{ opacity: 0, x: 10 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.3 }}
-            className="bg-white/5 backdrop-blur-sm rounded-xl p-5 border border-white/5"
+            className="bg-foreground/5 backdrop-blur-sm rounded-xl p-5 border border-foreground/5"
           >
-            <h3 className="text-white/60 text-sm font-medium mb-3 flex items-center gap-2">
+            <h3 className="text-foreground/60 text-sm font-medium mb-3 flex items-center gap-2">
               <Heart className="w-4 h-4 text-rose-400" />
               Règles de la communauté
             </h3>
 
             <ul className="space-y-2 text-sm">
-              <li className="flex items-start gap-2 text-white/40">
+              <li className="flex items-start gap-2 text-foreground/40">
                 <span className="text-rose-400/60">•</span>
                 Respecte les autres membres
               </li>
-              <li className="flex items-start gap-2 text-white/40">
+              <li className="flex items-start gap-2 text-foreground/40">
                 <span className="text-rose-400/60">•</span>
                 Partage tes connaissances
               </li>
-              <li className="flex items-start gap-2 text-white/40">
+              <li className="flex items-start gap-2 text-foreground/40">
                 <span className="text-rose-400/60">•</span>
                 Reste dans le sujet de la communauté
               </li>
-              <li className="flex items-start gap-2 text-white/40">
+              <li className="flex items-start gap-2 text-foreground/40">
                 <span className="text-rose-400/60">•</span>
                 Pas de spam ou de publicité
               </li>

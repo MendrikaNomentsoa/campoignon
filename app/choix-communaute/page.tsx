@@ -64,7 +64,7 @@ const CarteCommunaute = ({
     transition={{ duration: 0.4, delay: index * 0.12 }}
     whileHover={{ y: -2 }}
     onClick={() => onSelect(communaute.id)}
-    className="group cursor-pointer rounded-2xl border border-white/5 bg-white/[0.02] p-6 transition-all duration-300 hover:border-[#a92940]/20 hover:bg-white/[0.04]"
+    className="group cursor-pointer rounded-2xl border border-foreground/5 bg-foreground/[0.02] p-6 transition-all duration-300 hover:border-[#a92940]/20 hover:bg-foreground/[0.04]"
   >
     <div className="flex items-center gap-5">
       <div
@@ -73,13 +73,13 @@ const CarteCommunaute = ({
         <div className="text-white">{style.icone}</div>
       </div>
       <div className="min-w-0 flex-1">
-        <h3 className="text-lg font-semibold text-white group-hover:text-[#f6dce9] transition-colors">
+        <h3 className="text-lg font-semibold text-foreground group-hover:text-[#62121b] dark:group-hover:text-[#f6dce9] transition-colors">
           {communaute.nom}
         </h3>
-        <p className="mt-0.5 text-sm text-white/35 group-hover:text-white/50 transition-colors truncate">
+        <p className="mt-0.5 text-sm text-foreground/35 group-hover:text-foreground/50 transition-colors truncate">
           {communaute.description || "Rejoins cette communauté et lance-toi."}
         </p>
-        <span className="mt-1 inline-block text-xs text-white/20">
+        <span className="mt-1 inline-block text-xs text-foreground/20">
           {communaute.membres.toLocaleString()} membre
           {communaute.membres > 1 ? "s" : ""}
         </span>
@@ -105,14 +105,14 @@ const CarteAutreCommunaute = ({
     transition={{ duration: 0.3, delay: 0.6 + index * 0.04 }}
     whileHover={{ y: -2 }}
     onClick={() => onSelect(communaute.id)}
-    className="group cursor-pointer rounded-xl border border-white/5 bg-white/[0.02] p-4 text-center transition-all duration-300 hover:border-[#a92940]/20 hover:bg-white/[0.04]"
+    className="group cursor-pointer rounded-xl border border-foreground/5 bg-foreground/[0.02] p-4 text-center transition-all duration-300 hover:border-[#a92940]/20 hover:bg-foreground/[0.04]"
   >
     <div
       className={`mx-auto mb-2.5 flex size-10 items-center justify-center rounded-xl bg-gradient-to-br ${style.couleur} transition-transform duration-300 group-hover:scale-110`}
     >
       <div className="text-white">{style.icone}</div>
     </div>
-    <p className="text-sm font-medium text-white/60 group-hover:text-white transition-colors truncate">
+    <p className="text-sm font-medium text-foreground/60 group-hover:text-foreground transition-colors truncate">
       {communaute.nom}
     </p>
   </motion.div>
@@ -196,7 +196,7 @@ export default function ChoixCommunautePage() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#0c0204]">
+    <div className="flex min-h-screen flex-col bg-background">
       <BarreNavigation />
 
       <div className="flex-1 relative">
@@ -207,15 +207,15 @@ export default function ChoixCommunautePage() {
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-10 flex items-center justify-between rounded-2xl border border-white/5 bg-white/[0.02] p-4"
+            className="mb-10 flex items-center justify-between rounded-2xl border border-foreground/5 bg-foreground/[0.02] p-4"
           >
             <div className="flex items-center gap-3">
               <div className="flex size-9 items-center justify-center rounded-xl bg-gradient-to-br from-[#a92940] to-[#d8699e]">
                 <span className="text-sm font-bold text-white">C</span>
               </div>
               <div>
-                <p className="text-sm font-semibold text-white">Campoignon</p>
-                <p className="text-xs text-white/35">
+                <p className="text-sm font-semibold text-foreground">Campoignon</p>
+                <p className="text-xs text-foreground/35">
                   {isConnected
                     ? `Bienvenue ${user?.nom}`
                     : "Choisis ta communauté"}
@@ -226,12 +226,12 @@ export default function ChoixCommunautePage() {
               {isConnected ? (
                 <>
                   <div className="flex items-center gap-1.5 rounded-lg bg-[#a92940]/10 border border-[#a92940]/20 px-3 py-1.5">
-                    <CheckCircle className="size-3.5 text-[#d8699e]" />
-                    <span className="text-xs text-white/50">Connecté</span>
+                    <CheckCircle className="size-3.5 text-[#a92940] dark:text-[#d8699e]" />
+                    <span className="text-xs text-foreground/50">Connecté</span>
                   </div>
                   <button
                     onClick={handleLogout}
-                    className="flex items-center gap-1.5 rounded-lg bg-white/5 px-3 py-1.5 text-xs text-white/40 transition-colors hover:bg-white/10 hover:text-white/70"
+                    className="flex items-center gap-1.5 rounded-lg bg-foreground/5 px-3 py-1.5 text-xs text-foreground/40 transition-colors hover:bg-foreground/10 hover:text-foreground/70"
                   >
                     <LogOut className="size-3.5" />
                     Déconnexion
@@ -240,7 +240,7 @@ export default function ChoixCommunautePage() {
               ) : (
                 <Link
                   href="/connexion"
-                  className="flex items-center gap-1.5 rounded-lg bg-white/5 px-3 py-1.5 text-xs text-white/40 transition-colors hover:bg-white/10 hover:text-white/70"
+                  className="flex items-center gap-1.5 rounded-lg bg-foreground/5 px-3 py-1.5 text-xs text-foreground/40 transition-colors hover:bg-foreground/10 hover:text-foreground/70"
                 >
                   <User className="size-3.5" />
                   Connexion
@@ -258,18 +258,18 @@ export default function ChoixCommunautePage() {
           >
             <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#a92940]/20 bg-[#a92940]/10 px-4 py-1.5">
               <div className="size-1.5 rounded-full bg-[#d8699e] animate-pulse" />
-              <span className="text-xs font-medium text-white/60 uppercase tracking-wider">
+              <span className="text-xs font-medium text-foreground/60 uppercase tracking-wider">
                 Commence l&apos;aventure
               </span>
-              <Sparkles className="size-3.5 text-[#d8699e]" />
+              <Sparkles className="size-3.5 text-[#a92940] dark:text-[#d8699e]" />
             </div>
-            <h1 className="text-3xl font-bold text-white">
+            <h1 className="text-3xl font-bold text-foreground">
               Choisis ton{" "}
-              <span className="bg-gradient-to-r from-[#d8699e] to-[#f6dce9] bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-[#a92940] to-[#62121b] bg-clip-text text-transparent dark:from-[#d8699e] dark:to-[#f6dce9]">
                 Camp
               </span>
             </h1>
-            <p className="mt-2 text-sm text-white/35">
+            <p className="mt-2 text-sm text-foreground/35">
               {isConnected
                 ? "Rejoins une communauté pour démarrer"
                 : "Connecte-toi pour rejoindre une communauté"}
@@ -278,7 +278,7 @@ export default function ChoixCommunautePage() {
 
           {/* Loading */}
           {loading && (
-            <div className="flex items-center justify-center gap-2 py-16 text-white/30">
+            <div className="flex items-center justify-center gap-2 py-16 text-foreground/30">
               <Loader2 className="size-4 animate-spin" />
               <span className="text-sm">Chargement des communautés...</span>
             </div>
@@ -287,14 +287,14 @@ export default function ChoixCommunautePage() {
           {/* Error */}
           {!loading && error && (
             <div className="py-16 text-center">
-              <p className="text-sm text-[#d8699e]">{error}</p>
+              <p className="text-sm text-[#a92940] dark:text-[#d8699e]">{error}</p>
             </div>
           )}
 
           {/* Empty */}
           {!loading && !error && communautes.length === 0 && (
             <div className="py-16 text-center">
-              <p className="text-sm text-white/30">
+              <p className="text-sm text-foreground/30">
                 Aucune communauté disponible pour le moment.
               </p>
             </div>
@@ -305,7 +305,7 @@ export default function ChoixCommunautePage() {
             <>
               {suggerees.length > 0 && (
                 <div className="space-y-3">
-                  <p className="px-1 text-xs font-semibold uppercase tracking-widest text-white/25">
+                  <p className="px-1 text-xs font-semibold uppercase tracking-widest text-foreground/25">
                     Suggérées
                   </p>
                   <div className="space-y-3">
@@ -329,7 +329,7 @@ export default function ChoixCommunautePage() {
                   transition={{ delay: 0.5 }}
                   className="mt-10"
                 >
-                  <p className="mb-4 px-1 text-xs font-semibold uppercase tracking-widest text-white/25">
+                  <p className="mb-4 px-1 text-xs font-semibold uppercase tracking-widest text-foreground/25">
                     Autres communautés
                   </p>
                   <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
@@ -349,7 +349,7 @@ export default function ChoixCommunautePage() {
           )}
 
           {joiningId && (
-            <p className="mt-6 text-center text-xs text-white/20">
+            <p className="mt-6 text-center text-xs text-foreground/20">
               Connexion à la communauté...
             </p>
           )}

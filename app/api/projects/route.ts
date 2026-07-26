@@ -27,6 +27,7 @@ export async function GET(request: Request) {
     created_by: c.creator_id,
     community_id: c.community_id,
     challenge_id: c.id,
+    project_status: c.project_status ?? 'active',
   }));
 
   return NextResponse.json({ projects });
@@ -74,6 +75,7 @@ export async function POST(request: Request) {
     created_by: result.data.creator_id,
     community_id: result.data.community_id,
     challenge_id: result.data.id,
+    project_status: result.data.project_status ?? 'active',
   };
 
   return NextResponse.json({ project }, { status: 201 });

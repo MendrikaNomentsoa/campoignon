@@ -49,13 +49,13 @@ export default function DiscussionsPage() {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-rose-900/80 flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
-      <div className="border-b border-white/10 bg-white/5 backdrop-blur-sm px-4 py-3">
+      <div className="border-b border-foreground/10 bg-foreground/5 backdrop-blur-sm px-4 py-3">
         <div className="max-w-4xl mx-auto flex items-center gap-3">
           <button
             onClick={() => router.push(`/camp/${slug}`)}
-            className="flex items-center gap-2 text-white/40 hover:text-white/70 text-sm transition-colors"
+            className="flex items-center gap-2 text-foreground/40 hover:text-foreground/70 text-sm transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
           </button>
@@ -64,8 +64,8 @@ export default function DiscussionsPage() {
               <MessageSquare className="w-4 h-4 text-white" />
             </div>
             <div>
-              <h1 className="text-white font-medium">Discussions</h1>
-              <p className="text-white/40 text-xs">Échange en temps réel</p>
+              <h1 className="text-foreground font-medium">Discussions</h1>
+              <p className="text-foreground/40 text-xs">Échange en temps réel</p>
             </div>
           </div>
         </div>

@@ -41,7 +41,9 @@ export default function MotDePasseOubliePage() {
   return (
     <div className="flex min-h-screen">
       {/* Left side — branding */}
-      <div className="relative hidden w-1/2 flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-[#62121b] via-[#a92940] to-[#62121b] p-12 lg:flex">
+      <div className="relative hidden w-2/5 flex-col items-center justify-center overflow-hidden bg-background p-12 lg:flex">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,rgba(169,41,64,0.35)_0%,transparent_60%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,rgba(98,18,27,0.4)_0%,transparent_55%)]" />
         <div className="absolute inset-0 opacity-20">
           <svg
             viewBox="0 0 1200 120"
@@ -51,7 +53,7 @@ export default function MotDePasseOubliePage() {
             <path
               d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z"
               fill="currentColor"
-              className="text-white/10"
+              className="text-foreground/10"
             />
           </svg>
         </div>
@@ -76,7 +78,7 @@ export default function MotDePasseOubliePage() {
               priority
             />
           </motion.div>
-          <h1 className="mb-6 text-5xl font-bold tracking-tight text-white">
+          <h1 className="mb-6 text-5xl font-bold tracking-tight text-foreground">
             {["C", "a", "m", "p", null, "g", "n", "i", "o", "n"].map(
               (char, i) => (
                 <motion.span
@@ -122,64 +124,65 @@ export default function MotDePasseOubliePage() {
       </div>
 
       {/* Right side — forgot password form */}
-      <div className="flex w-full items-center justify-center bg-[#f6dce9] p-6 sm:p-12 lg:w-1/2">
+      <div className="relative flex w-full items-center justify-center overflow-hidden bg-background p-6 sm:p-12 lg:w-3/5">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(169,41,64,0.12)_0%,transparent_50%)]" />
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="w-full max-w-sm"
+          className="relative z-10 w-full max-w-md"
         >
           {/* Mobile-only header */}
           <div className="mb-8 text-center lg:hidden">
             <div className="mb-4 inline-flex size-12 items-center justify-center rounded-xl bg-[#a92940]">
               <Check className="size-6 text-white" />
             </div>
-            <h1 className="text-2xl font-bold tracking-tight text-black">
+            <h1 className="text-2xl font-bold tracking-tight text-foreground">
               Campoignon
             </h1>
           </div>
 
-          <Card className="border-white/30 bg-white shadow-[0_0_40px_rgba(169,41,64,0.25),0_0_80px_rgba(169,41,64,0.1)] backdrop-blur-2xl">
+          <Card className="border-foreground/10 bg-foreground/[0.03] shadow-[0_0_40px_rgba(169,41,64,0.25),0_0_80px_rgba(169,41,64,0.1)] backdrop-blur-2xl">
             <CardHeader>
-              <CardTitle className="text-xl text-black">
+              <CardTitle className="text-xl text-foreground">
                 {sent ? "Email envoyé !" : "Mot de passe oublié ?"}
               </CardTitle>
-              <CardDescription className="text-black/60">
+              <CardDescription className="text-foreground/50">
                 {sent
                   ? "Vérifie ta boîte de réception et suis le lien pour réinitialiser ton mot de passe."
                   : "Pas de souci, entre ton email et on t'envoie un lien pour réinitialiser ton mot de passe."}
               </CardDescription>
             </CardHeader>
 
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-5">
               {!sent ? (
                 <form
                   onSubmit={(e) => {
                     e.preventDefault()
                     setSent(true)
                   }}
-                  className="space-y-4"
+                  className="space-y-5"
                 >
                   {/* Email */}
                   <div className="space-y-2">
-                    <Label htmlFor="email" className="text-black">
+                    <Label htmlFor="email" className="text-foreground/80">
                       Email
                     </Label>
                     <div className="relative">
-                      <Mail className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-black/40" />
+                      <Mail className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-foreground/30" />
                       <Input
                         id="email"
                         type="email"
                         placeholder="name@example.com"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="pl-9 placeholder:text-black/40"
+                        className="h-10 border-foreground/10 bg-foreground/5 pl-9 text-foreground placeholder:text-foreground/30"
                       />
                     </div>
                   </div>
 
                   {/* Submit */}
-                  <Button type="submit" className="w-full">
+                  <Button type="submit" className="h-10 w-full">
                     Send reset link
                     <ArrowRight className="size-4" />
                   </Button>
@@ -189,18 +192,18 @@ export default function MotDePasseOubliePage() {
                   {/* Success state */}
                   <div className="flex flex-col items-center gap-4 py-4">
                     <div className="flex size-16 items-center justify-center rounded-full bg-[#a92940]/10">
-                      <Mail className="size-8 text-[#a92940]" />
+                      <Mail className="size-8 text-[#a92940] dark:text-[#d8699e]" />
                     </div>
-                    <p className="text-center text-sm text-black/60">
+                    <p className="text-center text-sm text-foreground/50">
                       Un email de réinitialisation a été envoyé à{" "}
-                      <span className="font-medium text-black">{email}</span>.
+                      <span className="font-medium text-foreground">{email}</span>.
                       Tu as 30 minutes pour cliquer sur le lien.
                     </p>
                   </div>
 
                   <Button
                     variant="outline"
-                    className="w-full text-black"
+                    className="h-10 w-full border-foreground/10 bg-foreground/5 text-foreground hover:bg-foreground/10 hover:text-foreground"
                     onClick={() => setSent(false)}
                   >
                     Renvoyer l&apos;email
@@ -211,7 +214,7 @@ export default function MotDePasseOubliePage() {
               {/* Back to login */}
               <Link
                 href="/connexion"
-                className="flex w-full items-center justify-center gap-2 text-sm font-medium text-black/60 transition-colors hover:text-black"
+                className="flex w-full items-center justify-center gap-2 text-sm font-medium text-foreground/40 transition-colors hover:text-foreground"
               >
                 <ArrowLeft className="size-4" />
                 Retour à la connexion

@@ -90,7 +90,9 @@ export default function InscriptionPage() {
   return (
     <div className="flex min-h-screen">
       {/* Left side — branding */}
-      <div className="relative hidden w-1/2 flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-[#62121b] via-[#a92940] to-[#62121b] p-12 lg:flex">
+      <div className="relative hidden w-2/5 flex-col items-center justify-center overflow-hidden bg-background p-12 lg:flex">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,rgba(169,41,64,0.35)_0%,transparent_60%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,rgba(98,18,27,0.4)_0%,transparent_55%)]" />
         <div className="absolute inset-0 opacity-20">
           <svg
             viewBox="0 0 1200 120"
@@ -100,7 +102,7 @@ export default function InscriptionPage() {
             <path
               d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z"
               fill="currentColor"
-              className="text-white/10"
+              className="text-foreground/10"
             />
           </svg>
         </div>
@@ -125,7 +127,7 @@ export default function InscriptionPage() {
               priority
             />
           </motion.div>
-          <h1 className="mb-6 text-5xl font-bold tracking-tight text-white">
+          <h1 className="mb-6 text-5xl font-bold tracking-tight text-foreground">
             {["C", "a", "m", "p", null, "g", "n", "i", "o", "n"].map(
               (char, i) => (
                 <motion.span
@@ -171,49 +173,50 @@ export default function InscriptionPage() {
       </div>
 
       {/* Right side — register form */}
-      <div className="flex w-full items-center justify-center bg-[#f6dce9] p-6 sm:p-12 lg:w-1/2">
+      <div className="relative flex w-full items-center justify-center overflow-hidden bg-background p-6 sm:p-12 lg:w-3/5">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(169,41,64,0.12)_0%,transparent_50%)]" />
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="w-full max-w-sm"
+          className="relative z-10 w-full max-w-md"
         >
           {/* Mobile-only header */}
           <div className="mb-8 text-center lg:hidden">
             <div className="mb-4 inline-flex size-12 items-center justify-center rounded-xl bg-[#a92940]">
               <Check className="size-6 text-white" />
             </div>
-            <h1 className="text-2xl font-bold tracking-tight text-black">
+            <h1 className="text-2xl font-bold tracking-tight text-foreground">
               Campoignon
             </h1>
           </div>
 
-          <Card className="border-white/30 bg-white shadow-[0_0_40px_rgba(169,41,64,0.25),0_0_80px_rgba(169,41,64,0.1)] backdrop-blur-2xl">
+          <Card className="border-foreground/10 bg-foreground/[0.03] shadow-[0_0_40px_rgba(169,41,64,0.25),0_0_80px_rgba(169,41,64,0.1)] backdrop-blur-2xl">
             <CardHeader>
-              <CardTitle className="text-xl text-black">
+              <CardTitle className="text-xl text-foreground">
                 Créer ton compte
               </CardTitle>
-              <CardDescription className="text-black/60">
+              <CardDescription className="text-foreground/50">
                 Rejoins la communauté et commence ton premier défi
               </CardDescription>
             </CardHeader>
 
-            <CardContent className="space-y-4">
-              <form onSubmit={handleSubmit} className="space-y-4">
+            <CardContent className="space-y-5">
+              <form onSubmit={handleSubmit} className="space-y-5">
                 {/* Username */}
                 <div className="space-y-2">
-                  <Label htmlFor="username" className="text-black">
+                  <Label htmlFor="username" className="text-foreground/80">
                     Nom d&apos;utilisateur
                   </Label>
                   <div className="relative">
-                    <User className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-black/40" />
+                    <User className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-foreground/30" />
                     <Input
                       id="username"
                       type="text"
                       placeholder="ton_pseudo"
                       value={username}
                       onChange={(e) => setUsername(e.target.value)}
-                      className="pl-9 placeholder:text-black/40"
+                      className="h-10 border-foreground/10 bg-foreground/5 pl-9 text-foreground placeholder:text-foreground/30"
                       required
                     />
                   </div>
@@ -221,18 +224,18 @@ export default function InscriptionPage() {
 
                 {/* Email */}
                 <div className="space-y-2">
-                  <Label htmlFor="email" className="text-black">
+                  <Label htmlFor="email" className="text-foreground/80">
                     Email
                   </Label>
                   <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-black/40" />
+                    <Mail className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-foreground/30" />
                     <Input
                       id="email"
                       type="email"
                       placeholder="nom@exemple.com"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="pl-9 placeholder:text-black/40"
+                      className="h-10 border-foreground/10 bg-foreground/5 pl-9 text-foreground placeholder:text-foreground/30"
                       required
                     />
                   </div>
@@ -240,25 +243,25 @@ export default function InscriptionPage() {
 
                 {/* Password */}
                 <div className="space-y-2">
-                  <Label htmlFor="password" className="text-black">
+                  <Label htmlFor="password" className="text-foreground/80">
                     Mot de passe
                   </Label>
                   <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-black/40" />
+                    <Lock className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-foreground/30" />
                     <Input
                       id="password"
                       type={showPassword ? "text" : "password"}
                       placeholder="••••••••"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="pl-9 pr-9 placeholder:text-black/40"
+                      className="h-10 border-foreground/10 bg-foreground/5 pl-9 pr-9 text-foreground placeholder:text-foreground/30"
                       required
                       minLength={6}
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-black/40 transition-colors hover:text-black"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-foreground/30 transition-colors hover:text-foreground"
                     >
                       {showPassword ? (
                         <EyeOff className="size-4" />
@@ -271,24 +274,24 @@ export default function InscriptionPage() {
 
                 {/* Confirm password */}
                 <div className="space-y-2">
-                  <Label htmlFor="confirmPassword" className="text-black">
+                  <Label htmlFor="confirmPassword" className="text-foreground/80">
                     Confirmer le mot de passe
                   </Label>
                   <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-black/40" />
+                    <Lock className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-foreground/30" />
                     <Input
                       id="confirmPassword"
                       type={showConfirm ? "text" : "password"}
                       placeholder="••••••••"
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
-                      className="pl-9 pr-9 placeholder:text-black/40"
+                      className="h-10 border-foreground/10 bg-foreground/5 pl-9 pr-9 text-foreground placeholder:text-foreground/30"
                       required
                     />
                     <button
                       type="button"
                       onClick={() => setShowConfirm(!showConfirm)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-black/40 transition-colors hover:text-black"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-foreground/30 transition-colors hover:text-foreground"
                     >
                       {showConfirm ? (
                         <EyeOff className="size-4" />
@@ -300,11 +303,11 @@ export default function InscriptionPage() {
                 </div>
 
                 {error && (
-                  <p className="text-sm font-medium text-[#a92940]">{error}</p>
+                  <p className="text-sm font-medium text-[#a92940] dark:text-[#d8699e]">{error}</p>
                 )}
 
                 {/* Submit */}
-                <Button type="submit" className="w-full" disabled={loading}>
+                <Button type="submit" className="h-10 w-full" disabled={loading}>
                   {loading ? "Création en cours..." : "S'inscrire"}
                   <ArrowRight className="size-4" />
                 </Button>
@@ -313,10 +316,10 @@ export default function InscriptionPage() {
               {/* Separator */}
               <div className="relative">
                 <div className="absolute inset-0 flex items-center">
-                  <Separator />
+                  <Separator className="bg-foreground/10" />
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-card px-2 text-black/60">
+                  <span className="bg-foreground/[0.03] px-2 text-foreground/40">
                     ou continuer avec
                   </span>
                 </div>
@@ -326,7 +329,7 @@ export default function InscriptionPage() {
               <Button
                 variant="outline"
                 type="button"
-                className="w-full text-black"
+                className="h-10 w-full border-foreground/10 bg-foreground/5 text-foreground hover:bg-foreground/10 hover:text-foreground"
                 onClick={() => alert("Inscription Google bientôt disponible")}
               >
                 <svg className="size-4" viewBox="0 0 24 24">
@@ -351,11 +354,11 @@ export default function InscriptionPage() {
               </Button>
 
               {/* Sign in link */}
-              <p className="text-center text-sm text-black/60">
+              <p className="text-center text-sm text-foreground/40">
                 Tu as déjà un compte ?{" "}
                 <Link
                   href="/connexion"
-                  className="font-medium text-black transition-colors hover:text-[#a92940] hover:underline"
+                  className="font-medium text-foreground transition-colors hover:text-[#a92940] dark:hover:text-[#d8699e] hover:underline"
                 >
                   Se connecter
                 </Link>

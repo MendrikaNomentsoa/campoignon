@@ -70,20 +70,20 @@ export default function CampPage() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#0c0204]">
-        <Loader2 className="size-6 text-white/40 animate-spin" />
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <Loader2 className="size-6 text-foreground/40 animate-spin" />
       </div>
     );
   }
 
   if (!communaute) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#0c0204]">
+      <div className="flex min-h-screen items-center justify-center bg-background">
         <div className="text-center">
-          <p className="text-lg text-white/50">Communauté introuvable</p>
+          <p className="text-lg text-foreground/50">Communauté introuvable</p>
           <Link
             href="/choix-communaute"
-            className="mt-3 inline-block text-sm text-[#d8699e] hover:underline"
+            className="mt-3 inline-block text-sm text-[#a92940] dark:text-[#d8699e] hover:underline"
           >
             Retour aux communautés
           </Link>
@@ -96,12 +96,12 @@ export default function CampPage() {
   const Icone = style.icone;
 
   return (
-    <div className="min-h-screen bg-[#0c0204]">
+    <div className="min-h-screen bg-background">
       <div className="mx-auto max-w-4xl px-6 py-10 space-y-8">
         {/* Back */}
         <button
           onClick={() => router.push("/choix-communaute")}
-          className="flex items-center gap-2 text-sm text-white/30 transition-colors hover:text-white/60"
+          className="flex items-center gap-2 text-sm text-foreground/30 transition-colors hover:text-foreground/60"
         >
           <ArrowLeft className="size-4" />
           Retour aux communautés
@@ -111,7 +111,7 @@ export default function CampPage() {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="relative overflow-hidden rounded-2xl border border-white/5 bg-white/[0.02] p-8"
+          className="relative overflow-hidden rounded-2xl border border-foreground/5 bg-foreground/[0.02] p-8"
         >
           <div
             className={`absolute inset-0 bg-gradient-to-br ${style.gradient} opacity-[0.06]`}
@@ -124,20 +124,20 @@ export default function CampPage() {
                 <Icone className="size-7 text-white" />
               </div>
               <div>
-                <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-white/30">
+                <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-foreground/30">
                   Communauté
                 </p>
-                <h1 className="text-2xl font-bold text-white">
+                <h1 className="text-2xl font-bold text-foreground">
                   {communaute.name}
                 </h1>
               </div>
             </div>
 
-            <p className="max-w-xl text-sm leading-relaxed text-white/45">
+            <p className="max-w-xl text-sm leading-relaxed text-foreground/45">
               {communaute.description || style.description}
             </p>
 
-            <div className="mt-4 flex items-center gap-2 text-xs text-white/30">
+            <div className="mt-4 flex items-center gap-2 text-xs text-foreground/30">
               <Users className="size-3.5" />
               {communaute.membres.toLocaleString()} membre
               {communaute.membres > 1 ? "s" : ""}
@@ -158,17 +158,17 @@ export default function CampPage() {
               >
                 <Link
                   href={s.href(slug)}
-                  className="group block rounded-2xl border border-white/5 bg-white/[0.02] p-6 transition-all duration-300 hover:border-[#a92940]/20 hover:bg-white/[0.04]"
+                  className="group block rounded-2xl border border-foreground/5 bg-foreground/[0.02] p-6 transition-all duration-300 hover:border-[#a92940]/20 hover:bg-foreground/[0.04]"
                 >
                   <div
                     className={`mb-4 inline-flex size-10 items-center justify-center rounded-xl bg-gradient-to-br ${s.gradient} shadow-lg transition-transform duration-300 group-hover:scale-110`}
                   >
                     <Icon className="size-5 text-white" />
                   </div>
-                  <h3 className="text-base font-semibold text-white group-hover:text-[#f6dce9] transition-colors">
+                  <h3 className="text-base font-semibold text-foreground group-hover:text-[#a92940] dark:group-hover:text-[#f6dce9] transition-colors">
                     {s.label}
                   </h3>
-                  <p className="mt-1 text-sm text-white/35">{s.description}</p>
+                  <p className="mt-1 text-sm text-foreground/35">{s.description}</p>
                 </Link>
               </motion.div>
             );

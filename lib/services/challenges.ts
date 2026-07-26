@@ -18,6 +18,41 @@ export async function listChallenges(
   return { data } as const;
 }
 
+// Défis à venir toutes communautés confondues (pour la notification globale)
+export async function listUpcomingChallenges(
+  supabase: SupabaseClient,
+  { userId }: { userId: string }
+) {
+  const { data: memberships, error: membershipsError } = await supabase
+    .from('community_members')
+    .select('community_id')
+    .eq('user_id', userId);
+
+  if (membershipsError) {
+    return { error: membershipsError.message, status: 500 } as const;
+  }
+
+  const communityIds = (memberships ?? []).map((m) => m.community_id);
+
+  if (communityIds.length === 0) {
+    return { data: [] } as const;
+  }
+
+  const { data, error } = await supabase
+    .from('challenges')
+    .select('id, title, reward, status, deadline, community_id, communities(name)')
+    .in('community_id', communityIds)
+    .neq('status', 'finished')
+    .not('deadline', 'is', null)
+    .order('deadline', { ascending: true });
+
+  if (error) {
+    return { error: error.message, status: 500 } as const;
+  }
+
+  return { data } as const;
+}
+
 // Créer un challenge (le créateur rejoint automatiquement)
 export async function createChallenge(
   supabase: SupabaseClient,
@@ -27,12 +62,14 @@ export async function createChallenge(
     title,
     description,
     reward,
+    deadline,
   }: {
     communityId: string;
     creatorId: string;
     title: string;
     description?: string;
     reward?: string;
+    deadline?: string;
   }
 ) {
   const { data, error } = await supabase
@@ -43,6 +80,7 @@ export async function createChallenge(
       title,
       description,
       reward,
+      deadline,
       status: 'open',
     })
     .select()

@@ -12,6 +12,7 @@ function toProject(data: any) {
     created_by: data.creator_id,
     community_id: data.community_id,
     challenge_id: data.id,
+    project_status: data.project_status ?? 'active',
   };
 }
 

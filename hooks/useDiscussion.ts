@@ -246,17 +246,20 @@ export function useDiscussion({ communityId, limit = 50 }: UseDiscussionOptions)
             if (response.ok) {
               const { data } = await response.json();
               if (!payload.new.parent_id) {
-                setMessages(prev => [data, ...prev]);
+                setMessages(prev => {
+                  if (prev.some(msg => msg.id === data.id)) return prev;
+                  return [data, ...prev];
+                });
               } else {
-                setMessages(prev => prev.map(msg => 
-                  msg.id === payload.new.parent_id 
-                    ? { 
-                        ...msg, 
-                        replies: [...(msg.replies || []), data],
-                        reply_count: (msg.reply_count || 0) + 1
-                      }
-                    : msg
-                ));
+                setMessages(prev => prev.map(msg => {
+                  if (msg.id !== payload.new.parent_id) return msg;
+                  if ((msg.replies || []).some(reply => reply.id === data.id)) return msg;
+                  return {
+                    ...msg,
+                    replies: [...(msg.replies || []), data],
+                    reply_count: (msg.reply_count || 0) + 1
+                  };
+                }));
               }
             }
           }

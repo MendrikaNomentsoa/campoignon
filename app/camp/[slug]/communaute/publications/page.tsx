@@ -35,12 +35,12 @@ export default function PublicationsPage() {
   const style = communaute ? getCommunityStyle(communaute.name) : getCommunityStyle("default");
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-rose-900/80 px-4 py-8 md:py-12">
+    <div className="min-h-screen bg-background px-4 py-8 md:py-12">
       <div className="max-w-3xl mx-auto space-y-6">
         <div className="flex items-center gap-3">
           <button
             onClick={() => router.push(`/camp/${slug}`)}
-            className="flex items-center gap-2 text-white/40 hover:text-white/70 text-sm transition-colors"
+            className="flex items-center gap-2 text-foreground/40 hover:text-foreground/70 text-sm transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
           </button>
@@ -49,8 +49,8 @@ export default function PublicationsPage() {
               <FileText className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-white">Publications</h1>
-              <p className="text-white/40 text-sm">
+              <h1 className="text-2xl font-bold text-foreground">Publications</h1>
+              <p className="text-foreground/40 text-sm">
                 {communaute?.name || "Chargement..."} · {publicationsMock.length} publications
               </p>
             </div>
@@ -60,24 +60,24 @@ export default function PublicationsPage() {
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="rounded-2xl p-5 border border-white/10 bg-white/5 space-y-3"
+          className="rounded-2xl p-5 border border-foreground/10 bg-foreground/5 space-y-3"
         >
           <div className="flex items-center gap-2">
             <Sparkles className="w-4 h-4 text-rose-400" />
-            <h3 className="text-white font-medium text-sm">Nouvelle publication</h3>
+            <h3 className="text-foreground font-medium text-sm">Nouvelle publication</h3>
           </div>
           <textarea
             value={nouvellePublication}
             onChange={(e) => setNouvellePublication(e.target.value)}
             placeholder="Partage où tu en es..."
             rows={3}
-            className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white 
-                       placeholder:text-white/30 focus:border-rose-400 focus:outline-none transition-colors 
+            className="w-full px-4 py-3 rounded-xl bg-foreground/5 border border-foreground/10 text-foreground
+                       placeholder:text-foreground/30 focus:border-rose-400 focus:outline-none transition-colors
                        resize-none text-sm"
           />
           <button
             disabled={!nouvellePublication.trim()}
-            className="px-5 py-2 rounded-xl bg-gradient-to-r from-rose-500 to-rose-400 text-white 
+            className="px-5 py-2 rounded-xl bg-gradient-to-r from-rose-500 to-rose-400 text-white
                        font-medium text-sm disabled:opacity-40 transition-all"
           >
             Publier
@@ -91,33 +91,33 @@ export default function PublicationsPage() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.15 + index * 0.05 }}
-              className="bg-white/5 backdrop-blur-sm rounded-xl p-5 border border-white/5 
-                         hover:border-white/20 transition-all duration-300"
+              className="bg-foreground/5 backdrop-blur-sm rounded-xl p-5 border border-foreground/5
+                         hover:border-foreground/20 transition-all duration-300"
             >
               <div className="flex items-start gap-3">
-                <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${style.couleur} 
+                <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${style.couleur}
                                 flex items-center justify-center text-white font-bold text-sm shrink-0`}>
                   {pub.avatar}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between">
                     <div>
-                      <span className="text-white/80 font-medium">{pub.auteur}</span>
-                      <span className="text-white/30 text-xs ml-2">{pub.date}</span>
+                      <span className="text-foreground/80 font-medium">{pub.auteur}</span>
+                      <span className="text-foreground/30 text-xs ml-2">{pub.date}</span>
                     </div>
                   </div>
-                  <h4 className="text-white font-medium mt-1">{pub.titre}</h4>
-                  <p className="text-white/50 text-sm mt-1">{pub.contenu}</p>
+                  <h4 className="text-foreground font-medium mt-1">{pub.titre}</h4>
+                  <p className="text-foreground/50 text-sm mt-1">{pub.contenu}</p>
                   <div className="flex items-center gap-4 mt-3">
-                    <button className="flex items-center gap-1 text-white/30 hover:text-rose-400 transition-colors text-xs">
+                    <button className="flex items-center gap-1 text-foreground/30 hover:text-rose-400 transition-colors text-xs">
                       <Heart className="w-4 h-4" />
                       {pub.likes}
                     </button>
-                    <button className="flex items-center gap-1 text-white/30 hover:text-rose-400 transition-colors text-xs">
+                    <button className="flex items-center gap-1 text-foreground/30 hover:text-rose-400 transition-colors text-xs">
                       <MessageCircle className="w-4 h-4" />
                       {pub.commentaires}
                     </button>
-                    <button className="flex items-center gap-1 text-white/30 hover:text-rose-400 transition-colors text-xs">
+                    <button className="flex items-center gap-1 text-foreground/30 hover:text-rose-400 transition-colors text-xs">
                       <Share2 className="w-4 h-4" />
                       Partager
                     </button>

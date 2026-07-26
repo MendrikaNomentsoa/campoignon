@@ -23,7 +23,7 @@ function parseAIJson<T>(raw: string): T | null {
 
 function extractExistingDescription(description: string | null): string {
   if (!description) return '';
-  const markers = ['__AI_INIT__', '__AI_PITCH__', '__AI_README__', '__AI_RESOURCES__'];
+  const markers = ['__AI_INIT__', '__AI_PITCH__', '__AI_README__', '__AI_RESOURCES__', '__AI_HERITAGE__'];
   let clean = description;
   for (const marker of markers) {
     const idx = clean.indexOf(marker);
@@ -526,19 +526,28 @@ export async function generateHeritageProject(
     const raw = chatResponse.choices?.[0]?.message?.content;
     if (!raw) return { error: "L'IA n'a pas pu générer la carte d'héritage." };
 
-    const result = parseAIJson<HeritageProjectResult>(raw);
-    if (result) return { data: result };
-
-    return {
-      data: {
-        summary: `Le projet "${challenge.title}" a atteint ${progress}% de progression avec ${doneTasks.length}/${totalTasks || 0} tâches terminées.`,
-        whatWorked: doneTasks.map(t => t.title),
-        whatDidntWork: ["Progression interrompue"],
-        remainingTasks: pendingTasks.map(t => t.title),
-        handoffNotes: "Reprendre les tâches restantes dans l'ordre de priorité. Consulter la description du projet pour le contexte initial.",
-        techState: `Statut : ${challenge.status}. ${doneTasks.length} tâches complétées, ${pendingTasks.length} en attente.`,
-      },
+    const parsed = parseAIJson<HeritageProjectResult>(raw);
+    const heritageData: HeritageProjectResult = parsed ?? {
+      summary: `Le projet "${challenge.title}" a atteint ${progress}% de progression avec ${doneTasks.length}/${totalTasks || 0} tâches terminées.`,
+      whatWorked: doneTasks.map(t => t.title),
+      whatDidntWork: ["Progression interrompue"],
+      remainingTasks: pendingTasks.map(t => t.title),
+      handoffNotes: "Reprendre les tâches restantes dans l'ordre de priorité. Consulter la description du projet pour le contexte initial.",
+      techState: `Statut : ${challenge.status}. ${doneTasks.length} tâches complétées, ${pendingTasks.length} en attente.`,
     };
+
+    const heritagePayload = JSON.stringify(heritageData);
+    const newDescription = buildDescriptionWithAI(
+      challenge.description,
+      `__AI_HERITAGE__${heritagePayload}__AI_HERITAGE__`
+    );
+
+    await supabase
+      .from('challenges')
+      .update({ description: newDescription })
+      .eq('id', projectId);
+
+    return { data: heritageData };
   } catch (error) {
     console.error('Erreur generateHeritageProject:', error);
     return { error: "Erreur lors de la génération de la carte d'héritage." };

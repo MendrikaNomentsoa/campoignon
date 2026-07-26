@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export function PiedPage() {
   return (
-    <footer className="mt-auto border-t border-white/5 bg-[#0c0204]">
+    <footer className="mt-auto border-t border-foreground/5 bg-background">
       <div className="mx-auto max-w-6xl px-6 py-12 lg:px-8">
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
           {/* Brand */}
@@ -16,9 +16,9 @@ export function PiedPage() {
                 height={28}
                 className="h-7 w-7 object-contain"
               />
-              <span className="text-sm font-bold text-white">Campoignon</span>
+              <span className="text-sm font-bold text-foreground">Campoignon</span>
             </Link>
-            <p className="mt-3 max-w-xs text-xs leading-relaxed text-white/30">
+            <p className="mt-3 max-w-xs text-xs leading-relaxed text-foreground/30">
               Vigne &amp; Voyages. La plateforme communautaire qui structure vos
               projets et garde la trace de chaque avancée.
             </p>
@@ -26,7 +26,7 @@ export function PiedPage() {
 
           {/* Plateforme */}
           <div>
-            <h4 className="mb-3 text-xs font-semibold uppercase tracking-widest text-white/40">
+            <h4 className="mb-3 text-xs font-semibold uppercase tracking-widest text-foreground/40">
               Plateforme
             </h4>
             <ul className="space-y-2">
@@ -38,7 +38,7 @@ export function PiedPage() {
                 <li key={link.label}>
                   <Link
                     href={link.href}
-                    className="text-sm text-white/35 transition-colors hover:text-white/70"
+                    className="text-sm text-foreground/35 transition-colors hover:text-foreground/70"
                   >
                     {link.label}
                   </Link>
@@ -49,7 +49,7 @@ export function PiedPage() {
 
           {/* Légal */}
           <div>
-            <h4 className="mb-3 text-xs font-semibold uppercase tracking-widest text-white/40">
+            <h4 className="mb-3 text-xs font-semibold uppercase tracking-widest text-foreground/40">
               Légal
             </h4>
             <ul className="space-y-2">
@@ -60,7 +60,7 @@ export function PiedPage() {
                 <li key={link.label}>
                   <Link
                     href={link.href}
-                    className="text-sm text-white/35 transition-colors hover:text-white/70"
+                    className="text-sm text-foreground/35 transition-colors hover:text-foreground/70"
                     dangerouslySetInnerHTML={{ __html: link.label }}
                   />
                 </li>
@@ -70,14 +70,14 @@ export function PiedPage() {
 
           {/* Compte */}
           <div>
-            <h4 className="mb-3 text-xs font-semibold uppercase tracking-widest text-white/40">
+            <h4 className="mb-3 text-xs font-semibold uppercase tracking-widest text-foreground/40">
               Compte
             </h4>
             <ul className="space-y-2">
               <li>
                 <Link
                   href="/connexion"
-                  className="text-sm text-white/35 transition-colors hover:text-white/70"
+                  className="text-sm text-foreground/35 transition-colors hover:text-foreground/70"
                 >
                   Se connecter
                 </Link>
@@ -85,7 +85,7 @@ export function PiedPage() {
               <li>
                 <Link
                   href="/inscription"
-                  className="text-sm text-white/35 transition-colors hover:text-white/70"
+                  className="text-sm text-foreground/35 transition-colors hover:text-foreground/70"
                 >
                   Créer un compte
                 </Link>
@@ -95,11 +95,11 @@ export function PiedPage() {
         </div>
 
         {/* Bottom bar */}
-        <div className="mt-10 flex flex-col items-center justify-between gap-4 border-t border-white/5 pt-8 sm:flex-row">
-          <p className="text-xs text-white/20">
+        <div className="mt-10 flex flex-col items-center justify-between gap-4 border-t border-foreground/5 pt-8 sm:flex-row">
+          <p className="text-xs text-foreground/20">
             &copy; {new Date().getFullYear()} Campoignon. Tous droits réservés.
           </p>
-          <p className="text-xs text-white/15">Vigne &amp; Voyages</p>
+          <p className="text-xs text-foreground/15">Vigne &amp; Voyages</p>
         </div>
       </div>
     </footer>
