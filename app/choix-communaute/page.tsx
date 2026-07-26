@@ -16,9 +16,11 @@ import {
   LogOut,
   User,
   CheckCircle,
+  Loader2,
 } from "lucide-react";
+import { BarreNavigation } from "@/components/navigation/BarreNavigation";
+import { PiedPage } from "@/components/navigation/PiedPage";
 
-// Types
 interface Communaute {
   id: string;
   nom: string;
@@ -32,46 +34,19 @@ interface CommunauteStyle {
   gradient: string;
 }
 
-// Palette visuelle réutilisée pour chaque communauté (les vraies données Supabase
-// n'ont ni icône ni couleur, on assigne un style en tournant sur cette palette)
 const PALETTE: CommunauteStyle[] = [
-  {
-    icone: <Code2 className="w-12 h-12" />,
-    couleur: "from-purple-500 to-pink-500",
-    gradient: "from-purple-600/30 to-pink-600/30",
-  },
-  {
-    icone: <BookOpen className="w-12 h-12" />,
-    couleur: "from-amber-400 to-orange-500",
-    gradient: "from-amber-400/30 to-orange-500/30",
-  },
-  {
-    icone: <Dumbbell className="w-12 h-12" />,
-    couleur: "from-emerald-400 to-teal-500",
-    gradient: "from-emerald-400/30 to-teal-500/30",
-  },
-  {
-    icone: <Palette className="w-12 h-12" />,
-    couleur: "from-rose-400 to-red-500",
-    gradient: "from-rose-400/30 to-red-500/30",
-  },
-  {
-    icone: <Music className="w-12 h-12" />,
-    couleur: "from-blue-400 to-indigo-500",
-    gradient: "from-blue-400/30 to-indigo-500/30",
-  },
-  {
-    icone: <Rocket className="w-12 h-12" />,
-    couleur: "from-yellow-400 to-orange-400",
-    gradient: "from-yellow-400/30 to-orange-400/30",
-  },
+  { icone: <Code2 className="size-8" />, couleur: "from-[#a92940] to-[#d8699e]", gradient: "from-[#a92940]/20 to-[#d8699e]/20" },
+  { icone: <BookOpen className="size-8" />, couleur: "from-[#62121b] to-[#a92940]", gradient: "from-[#62121b]/20 to-[#a92940]/20" },
+  { icone: <Dumbbell className="size-8" />, couleur: "from-[#d8699e] to-[#a92940]", gradient: "from-[#d8699e]/20 to-[#a92940]/20" },
+  { icone: <Palette className="size-8" />, couleur: "from-[#a92940] to-[#62121b]", gradient: "from-[#a92940]/20 to-[#62121b]/20" },
+  { icone: <Music className="size-8" />, couleur: "from-[#62121b] to-[#d8699e]", gradient: "from-[#62121b]/20 to-[#d8699e]/20" },
+  { icone: <Rocket className="size-8" />, couleur: "from-[#d8699e] to-[#62121b]", gradient: "from-[#d8699e]/20 to-[#62121b]/20" },
 ];
 
 function styleForIndex(index: number): CommunauteStyle {
   return PALETTE[index % PALETTE.length];
 }
 
-// Composant Carte de communauté (grande, pour les 2 premières)
 const CarteCommunaute = ({
   communaute,
   style,
@@ -82,51 +57,37 @@ const CarteCommunaute = ({
   style: CommunauteStyle;
   onSelect: (id: string) => void;
   index: number;
-}) => {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: index * 0.15 }}
-      whileHover={{ scale: 1.02, y: -3 }}
-      onClick={() => onSelect(communaute.id)}
-      className="group relative cursor-pointer rounded-2xl p-6 border-2 border-white/10 bg-white/5 
-                 hover:border-white/30 hover:bg-white/10 transition-all duration-300"
-    >
+}) => (
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.4, delay: index * 0.12 }}
+    whileHover={{ y: -2 }}
+    onClick={() => onSelect(communaute.id)}
+    className="group cursor-pointer rounded-2xl border border-white/5 bg-white/[0.02] p-6 transition-all duration-300 hover:border-[#a92940]/20 hover:bg-white/[0.04]"
+  >
+    <div className="flex items-center gap-5">
       <div
-        className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${style.gradient} opacity-0 
-                    group-hover:opacity-100 transition-opacity duration-500`}
-      />
-
-      <div className="relative z-10 flex items-center gap-6">
-        <div
-          className={`p-4 rounded-2xl bg-gradient-to-br ${style.couleur} 
-                      shadow-lg transform group-hover:scale-110 transition-all duration-300`}
-        >
-          <div className="text-white">{style.icone}</div>
-        </div>
-
-        <div className="flex-1">
-          <h3 className="text-xl font-bold text-white group-hover:text-transparent 
-                       group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-rose-200 
-                       group-hover:bg-clip-text transition-all duration-300">
-            {communaute.nom}
-          </h3>
-          <p className="text-white/50 text-sm mt-1 group-hover:text-white/70 transition-colors">
-            {communaute.description || "Rejoins cette communauté et lance-toi."}
-          </p>
-          <div className="flex items-center gap-3 mt-2">
-            <span className="text-xs text-white/30">
-              {communaute.membres.toLocaleString()} membre{communaute.membres > 1 ? "s" : ""}
-            </span>
-          </div>
-        </div>
+        className={`flex size-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br ${style.couleur} shadow-lg transition-transform duration-300 group-hover:scale-110`}
+      >
+        <div className="text-white">{style.icone}</div>
       </div>
-    </motion.div>
-  );
-};
+      <div className="min-w-0 flex-1">
+        <h3 className="text-lg font-semibold text-white group-hover:text-[#f6dce9] transition-colors">
+          {communaute.nom}
+        </h3>
+        <p className="mt-0.5 text-sm text-white/35 group-hover:text-white/50 transition-colors truncate">
+          {communaute.description || "Rejoins cette communauté et lance-toi."}
+        </p>
+        <span className="mt-1 inline-block text-xs text-white/20">
+          {communaute.membres.toLocaleString()} membre
+          {communaute.membres > 1 ? "s" : ""}
+        </span>
+      </div>
+    </div>
+  </motion.div>
+);
 
-// Carte "Autre communauté" (petite, pour le reste)
 const CarteAutreCommunaute = ({
   communaute,
   style,
@@ -137,90 +98,27 @@ const CarteAutreCommunaute = ({
   style: CommunauteStyle;
   onSelect: (id: string) => void;
   index: number;
-}) => {
-  return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.4, delay: 0.8 + index * 0.05 }}
-      whileHover={{ scale: 1.05, y: -3 }}
-      onClick={() => onSelect(communaute.id)}
-      className="group cursor-pointer rounded-xl p-4 border border-white/5 bg-white/5 
-                 hover:bg-white/10 hover:border-white/20 transition-all duration-300 text-center"
+}) => (
+  <motion.div
+    initial={{ opacity: 0, scale: 0.95 }}
+    animate={{ opacity: 1, scale: 1 }}
+    transition={{ duration: 0.3, delay: 0.6 + index * 0.04 }}
+    whileHover={{ y: -2 }}
+    onClick={() => onSelect(communaute.id)}
+    className="group cursor-pointer rounded-xl border border-white/5 bg-white/[0.02] p-4 text-center transition-all duration-300 hover:border-[#a92940]/20 hover:bg-white/[0.04]"
+  >
+    <div
+      className={`mx-auto mb-2.5 flex size-10 items-center justify-center rounded-xl bg-gradient-to-br ${style.couleur} transition-transform duration-300 group-hover:scale-110`}
     >
-      <div
-        className={`p-3 rounded-xl bg-gradient-to-br ${style.couleur} 
-                    w-fit mx-auto mb-2 group-hover:scale-110 transition-all duration-300`}
-      >
-        <div className="text-white text-2xl">{style.icone}</div>
-      </div>
-      <p className="text-white/70 text-sm font-medium group-hover:text-white transition-colors">
-        {communaute.nom}
-      </p>
-    </motion.div>
-  );
-};
+      <div className="text-white">{style.icone}</div>
+    </div>
+    <p className="text-sm font-medium text-white/60 group-hover:text-white transition-colors truncate">
+      {communaute.nom}
+    </p>
+  </motion.div>
+);
 
-// Composant Header
-const Header = ({
-  isConnected,
-  user,
-  onLogout,
-}: {
-  isConnected: boolean;
-  user: { nom: string; email: string } | null;
-  onLogout: () => void;
-}) => {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: -10 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="flex items-center justify-between mb-8 p-4 bg-white/5 backdrop-blur-lg rounded-2xl border border-white/5"
-    >
-      <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-rose-500 to-rose-400 flex items-center justify-center">
-          <span className="text-white font-bold text-lg">C</span>
-        </div>
-        <div>
-          <p className="text-white font-medium">Campoignon</p>
-          <p className="text-white/40 text-sm">
-            {isConnected ? `Bienvenue ${user?.nom}` : "Choisis ta communauté"}
-          </p>
-        </div>
-      </div>
-      <div className="flex items-center gap-3">
-        {isConnected ? (
-          <>
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-rose-400/10 border border-rose-400/20">
-              <CheckCircle className="w-4 h-4 text-rose-400" />
-              <span className="text-xs text-white/70">Connecté</span>
-            </div>
-            <button
-              onClick={onLogout}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 
-                         text-white/60 hover:text-white/90 transition-all duration-300"
-            >
-              <LogOut className="w-4 h-4" />
-              <span className="text-sm">Déconnexion</span>
-            </button>
-          </>
-        ) : (
-          <Link
-            href="/connexion"
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 
-                       text-white/60 hover:text-white/90 transition-all duration-300"
-          >
-            <User className="w-4 h-4" />
-            <span className="text-sm">Connexion</span>
-          </Link>
-        )}
-      </div>
-    </motion.div>
-  );
-};
-
-// Page principale
-export default function Home() {
+export default function ChoixCommunautePage() {
   const router = useRouter();
   const [isConnected, setIsConnected] = useState(false);
   const [user, setUser] = useState<{ nom: string; email: string } | null>(null);
@@ -229,7 +127,6 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [joiningId, setJoiningId] = useState<string | null>(null);
 
-  // Vérifier si l'utilisateur est connecté
   useEffect(() => {
     (async () => {
       try {
@@ -238,18 +135,11 @@ export default function Home() {
           const { user: me } = await res.json();
           setIsConnected(true);
           setUser({ nom: me.username, email: me.email });
-        } else {
-          setIsConnected(false);
-          setUser(null);
         }
-      } catch {
-        setIsConnected(false);
-        setUser(null);
-      }
+      } catch {}
     })();
   }, []);
 
-  // Charger les vraies communautés depuis Supabase
   useEffect(() => {
     (async () => {
       try {
@@ -280,182 +170,193 @@ export default function Home() {
   const suggerees = communautes.slice(0, 2);
   const autres = communautes.slice(2);
 
-  // Sélectionner une communauté -> rejoint (si connecté) et va direct sur ses discussions
   const handleSelectCommunaute = async (id: string) => {
     if (!isConnected) {
       router.push("/connexion");
       return;
     }
-
     setJoiningId(id);
     try {
       await fetch(`/api/communities/${id}/join`, { method: "POST" });
-    } catch {
-      // si le join échoue on tente quand même la redirection,
-      // la page de discussions affichera l'erreur d'accès le cas échéant
-    } finally {
+    } catch {}
+    finally {
       setJoiningId(null);
     }
-
     localStorage.setItem("campoignon_communaute", id);
     router.push(`/camp/${id}`);
   };
 
-  // Déconnexion
   const handleLogout = async () => {
     try {
       await fetch("/api/auth/logout", { method: "POST" });
-    } catch {
-      // ignore
-    }
+    } catch {}
     setIsConnected(false);
     setUser(null);
-    localStorage.removeItem("campoignon_user");
-    localStorage.removeItem("campoignon_communaute");
     router.push("/");
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-rose-900/80 relative overflow-hidden">
-      {/* Effets de fond */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(196,69,69,0.15)_0%,transparent_60%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(139,42,42,0.1)_0%,transparent_50%)]" />
+    <div className="flex min-h-screen flex-col bg-[#0c0204]">
+      <BarreNavigation />
 
-      {/* Cercle lumineux */}
-      <motion.div
-        initial={{ scale: 0.8, opacity: 0.3 }}
-        animate={{ scale: 1.5, opacity: 0.08 }}
-        transition={{ duration: 4, repeat: Infinity, repeatType: "reverse" }}
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 
-                   w-[700px] h-[700px] rounded-full bg-gradient-to-r from-rose-400/10 via-rose-300/10 to-pink-200/10 
-                   blur-3xl"
-      />
+      <div className="flex-1 relative">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(169,41,64,0.08)_0%,transparent_50%)]" />
 
-      <div className="relative z-10 container max-w-4xl mx-auto px-4 py-8 md:py-12">
-        <Header isConnected={isConnected} user={user} onLogout={handleLogout} />
-
-        {/* Titre */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-10"
-        >
-          <div className="inline-block mb-4">
-            <div className="px-4 py-2 rounded-full bg-gradient-to-r from-rose-500/20 to-rose-300/20 backdrop-blur-xl border border-white/10">
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-rose-400 animate-pulse" />
-                <span className="text-white/70 text-xs font-medium tracking-wider uppercase">
-                  Commence l&apos;aventure
-                </span>
-                <Sparkles className="w-4 h-4 text-rose-300" />
+        <div className="relative mx-auto max-w-4xl px-6 py-12">
+          {/* Header bar */}
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-10 flex items-center justify-between rounded-2xl border border-white/5 bg-white/[0.02] p-4"
+          >
+            <div className="flex items-center gap-3">
+              <div className="flex size-9 items-center justify-center rounded-xl bg-gradient-to-br from-[#a92940] to-[#d8699e]">
+                <span className="text-sm font-bold text-white">C</span>
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-white">Campoignon</p>
+                <p className="text-xs text-white/35">
+                  {isConnected
+                    ? `Bienvenue ${user?.nom}`
+                    : "Choisis ta communauté"}
+                </p>
               </div>
             </div>
-          </div>
+            <div className="flex items-center gap-2">
+              {isConnected ? (
+                <>
+                  <div className="flex items-center gap-1.5 rounded-lg bg-[#a92940]/10 border border-[#a92940]/20 px-3 py-1.5">
+                    <CheckCircle className="size-3.5 text-[#d8699e]" />
+                    <span className="text-xs text-white/50">Connecté</span>
+                  </div>
+                  <button
+                    onClick={handleLogout}
+                    className="flex items-center gap-1.5 rounded-lg bg-white/5 px-3 py-1.5 text-xs text-white/40 transition-colors hover:bg-white/10 hover:text-white/70"
+                  >
+                    <LogOut className="size-3.5" />
+                    Déconnexion
+                  </button>
+                </>
+              ) : (
+                <Link
+                  href="/connexion"
+                  className="flex items-center gap-1.5 rounded-lg bg-white/5 px-3 py-1.5 text-xs text-white/40 transition-colors hover:bg-white/10 hover:text-white/70"
+                >
+                  <User className="size-3.5" />
+                  Connexion
+                </Link>
+              )}
+            </div>
+          </motion.div>
 
-          <h1 className="text-3xl md:text-4xl font-bold text-white">
-            Bienvenue dans ton{" "}
-            <span className="bg-gradient-to-r from-rose-400 via-rose-300 to-pink-200 bg-clip-text text-transparent">
-              Camp
-            </span>
-          </h1>
-
-          <p className="text-white/40 mt-2 text-sm">
-            {isConnected
-              ? "Choisis une communauté pour rejoindre sa discussion"
-              : "Connecte-toi ou inscris-toi pour rejoindre une communauté"}
-          </p>
-        </motion.div>
-
-        {loading && (
-          <div className="flex items-center justify-center gap-2 text-white/40 py-12">
-            <Users className="w-5 h-5 animate-pulse" />
-            <span className="text-sm">Chargement des communautés...</span>
-          </div>
-        )}
-
-        {!loading && error && (
-          <div className="text-center py-12">
-            <p className="text-rose-300 text-sm">{error}</p>
-          </div>
-        )}
-
-        {!loading && !error && communautes.length === 0 && (
-          <div className="text-center py-12">
-            <p className="text-white/40 text-sm">
-              Aucune communauté disponible pour le moment.
+          {/* Title */}
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="mb-10 text-center"
+          >
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#a92940]/20 bg-[#a92940]/10 px-4 py-1.5">
+              <div className="size-1.5 rounded-full bg-[#d8699e] animate-pulse" />
+              <span className="text-xs font-medium text-white/60 uppercase tracking-wider">
+                Commence l&apos;aventure
+              </span>
+              <Sparkles className="size-3.5 text-[#d8699e]" />
+            </div>
+            <h1 className="text-3xl font-bold text-white">
+              Choisis ton{" "}
+              <span className="bg-gradient-to-r from-[#d8699e] to-[#f6dce9] bg-clip-text text-transparent">
+                Camp
+              </span>
+            </h1>
+            <p className="mt-2 text-sm text-white/35">
+              {isConnected
+                ? "Rejoins une communauté pour démarrer"
+                : "Connecte-toi pour rejoindre une communauté"}
             </p>
-          </div>
-        )}
+          </motion.div>
 
-        {!loading && !error && communautes.length > 0 && (
-          <>
-            {/* Communautés suggérées */}
-            {suggerees.length > 0 && (
-              <div className="space-y-4">
-                <p className="text-white/30 text-sm font-medium uppercase tracking-wider px-1">
-                  Communautés suggérées
-                </p>
+          {/* Loading */}
+          {loading && (
+            <div className="flex items-center justify-center gap-2 py-16 text-white/30">
+              <Loader2 className="size-4 animate-spin" />
+              <span className="text-sm">Chargement des communautés...</span>
+            </div>
+          )}
 
-                <div className="grid grid-cols-1 gap-4">
-                  {suggerees.map((communaute, index) => (
-                    <CarteCommunaute
-                      key={communaute.id}
-                      communaute={communaute}
-                      style={styleForIndex(index)}
-                      onSelect={handleSelectCommunaute}
-                      index={index}
-                    />
-                  ))}
+          {/* Error */}
+          {!loading && error && (
+            <div className="py-16 text-center">
+              <p className="text-sm text-[#d8699e]">{error}</p>
+            </div>
+          )}
+
+          {/* Empty */}
+          {!loading && !error && communautes.length === 0 && (
+            <div className="py-16 text-center">
+              <p className="text-sm text-white/30">
+                Aucune communauté disponible pour le moment.
+              </p>
+            </div>
+          )}
+
+          {/* Communities */}
+          {!loading && !error && communautes.length > 0 && (
+            <>
+              {suggerees.length > 0 && (
+                <div className="space-y-3">
+                  <p className="px-1 text-xs font-semibold uppercase tracking-widest text-white/25">
+                    Suggérées
+                  </p>
+                  <div className="space-y-3">
+                    {suggerees.map((c, i) => (
+                      <CarteCommunaute
+                        key={c.id}
+                        communaute={c}
+                        style={styleForIndex(i)}
+                        onSelect={handleSelectCommunaute}
+                        index={i}
+                      />
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            {/* Autres communautés */}
-            {autres.length > 0 && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.6 }}
-                className="mt-8"
-              >
-                <p className="text-white/30 text-sm font-medium uppercase tracking-wider px-1 mb-4">
-                  Autres communautés
-                </p>
+              {autres.length > 0 && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.5 }}
+                  className="mt-10"
+                >
+                  <p className="mb-4 px-1 text-xs font-semibold uppercase tracking-widest text-white/25">
+                    Autres communautés
+                  </p>
+                  <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                    {autres.map((c, i) => (
+                      <CarteAutreCommunaute
+                        key={c.id}
+                        communaute={c}
+                        style={styleForIndex(i + suggerees.length)}
+                        onSelect={handleSelectCommunaute}
+                        index={i}
+                      />
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </>
+          )}
 
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                  {autres.map((communaute, index) => (
-                    <CarteAutreCommunaute
-                      key={communaute.id}
-                      communaute={communaute}
-                      style={styleForIndex(index + suggerees.length)}
-                      onSelect={handleSelectCommunaute}
-                      index={index}
-                    />
-                  ))}
-                </div>
-              </motion.div>
-            )}
-          </>
-        )}
-
-        {joiningId && (
-          <p className="text-center text-white/30 text-xs mt-6">
-            Connexion à la communauté...
-          </p>
-        )}
-
-        {/* Footer */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1 }}
-          className="mt-12 text-center"
-        >
-          <p className="text-white/10 text-xs">
-            ✦ Choisis ta communauté et commence ton premier projet ✦
-          </p>
-        </motion.div>
+          {joiningId && (
+            <p className="mt-6 text-center text-xs text-white/20">
+              Connexion à la communauté...
+            </p>
+          )}
+        </div>
       </div>
+
+      <PiedPage />
     </div>
   );
 }
